@@ -1,0 +1,28 @@
+int InputMenu(){
+    int input;
+
+    //main menu
+    menu:
+    textcolor(2);
+    printf("Menu\n");
+    printf("----------------------------\n");
+        printf("1. Start Game\n");
+        printf("2. High Scores\n");
+        printf("3. Help\n");
+        printf("4. About Author\n");
+        printf("5. Exit Game\n");
+    printf("Pilih No. Menu : ");
+    scanf("%d", &input);
+
+    //cek keabsahan menu
+    if(input < 1 || input > 5){
+        system("cls");
+            printf("Nomer menu yang anda input salah !!!\n");
+            printf("Coba ulangi lagi\n");
+        system("pause");
+        system("cls");
+        goto menu;
+    }
+
+    return input;
+}
