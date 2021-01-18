@@ -1,0 +1,108 @@
+#include<stdio.h>
+#include<stdbool.h>
+//Authors : Arsal Fadilah && Nauval Ozora
+
+/*kumpulan modul*/
+void LoadGame();
+void DisplayMenu();
+int InputMenu();
+void StartGame();
+    int ChooseEnemy();
+    int ChooseLevel();
+    void InGame();
+        void InpuNama(char nama[20]);
+        void PlayerVsPlayer();
+            int suit();
+            void Easy();
+                void Display3x3();
+                int Turn();
+                    void StartTime();
+                    char p_1_InputX();
+                    char p_2_InputO();
+                bool CekSel();
+                    bool CekBar();
+                    bool CekCol();
+                    bool CekDiagon();
+                        void GameOver();
+            void Medium();
+                void Display5x5();
+            void Hard();
+                void Display7x7();
+        void playerVsComputer();
+            char p_com_InputO();
+void HighScores();
+void Help();
+void AboutAuthor();
+void exitGame();
+
+int main(){
+
+    LoadGame();
+    menu :
+        DisplayMenu();
+        switch(InputMenu()){
+            case 1 : StartGame(); break;
+            case 2 : HighScores(); break;
+            case 3 : Help(); break;
+            case 4 : AboutAuthor(); break;
+            case 5 : exitGame(); break;
+            default :
+                printf("WRONG INPUT NUMBER.\n");
+                printf("Pilih nomer aja salah, apalagi pilih pasangan hidup -.-\n\n");
+                system("pause");
+                system("cls");
+                goto menu;
+        }
+
+    return 0;
+}
+
+void LoadGame(){}
+
+void DisplayMenu(){}
+
+int InputMenu(){
+    int x;
+
+        scanf("%d", &x);
+
+    return x;
+}
+
+void StartGame(){
+    int enemy, level;
+
+    enemy = ChooseEnemy();
+    level = ChooseLevel();
+
+    InGame(enemy, level);
+
+}
+
+int ChooseEnemy(){}
+int ChooseLevel(){}
+void InGame(int enemy, int level){}
+void InpuNama(char nama[20]){}
+void PlayerVsPlayer(){}
+int suit(){}
+void Easy(){}
+void Display3x3(){}
+int Turn(){}
+void StartTime(){}
+char p_1_InputX(){}
+char p_2_InputO(){}
+bool CekSel(){}
+bool CekBar(){}
+bool CekCol(){}
+bool CekDiagon(){}
+void GameOver(){}
+void Medium(){}
+void Display5x5(){}
+void Hard(){}
+void Display7x7(){}
+void playerVsComputer(){}
+char p_com_InputO(){}
+void HighScores(){}
+void Help(){}
+void AboutAuthor(){}
+void exitGame(){}
