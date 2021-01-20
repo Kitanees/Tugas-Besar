@@ -287,26 +287,26 @@ int a;
         system("cls");
 		}else{
 		if(a<2){
-				printf("Nama : Arsal Fadilah\n");
-				printf("Tempat, Tanggal Lahir : Bandung, 26 April 2002\n");
-				printf("Jenis Kelamin : Laki-laki\n");
-				printf("Agama : Islam\n");
-				printf("Alamat : Kp. Cidawolong 1 Rt 03/14 Des.Biru Kec.Majalaya Kab.Bandung\n");
-				printf("Nomor Telepon : 081214151280\n");
-				printf("E-mail : arsalfadilah2002@gmail.com\n");
-				printf("Hobi : Basket\n");
-				printf("Motto Hidup : Never give up ! Trust me its work");
+				printf("Nama \t\t\t: Arsal Fadilah\n");
+				printf("Tempat, Tanggal Lahir \t: Bandung, 26 April 2002\n");
+				printf("Jenis Kelamin \t\t: Laki-laki\n");
+				printf("Agama \t\t\t: Islam\n");
+				printf("Alamat \t\t\t: Kp. Cidawolong 1 Rt 03/14 Des.Biru Kec.Majalaya Kab.Bandung\n");
+				printf("Nomor Telepon \t\t: 081214151280\n");
+				printf("E-mail \t\t\t: arsalfadilah2002@gmail.com\n");
+				printf("Hobi \t\t\t: Basket\n");
+				printf("Motto Hidup \t\t: Never give up ! Trust me its work\n");
 			}else{
-				printf("Nama : Nauval Ozora Mahadri\n");
-				printf("Tempat, Tanggal Lahir : Bandung, 29 Juli 2002\n");
-				printf("Jenis Kelamin : Laki-laki\n");
-				printf("Agama : Islam\n");
-				printf("Alamat : Jalan Cibangkong Tengah RT.09/RW.11 NO.300/120\n");
-				printf("Alamat Asal : Kp. Cidawolong 1 Rt 03/14 Des.Biru Kec.Majalaya Kab.Bandung\n");
-				printf("Nomor Telepon : 085624333058\n");
-				printf("E-mail : ozoramahadri02@gmail.com\n");
-				printf("Hobi : baca\n");
-				printf("Motto Hidup : gak ada yang gak bisa\n");
+				printf("Nama \t\t\t: Nauval Ozora Mahadri\n");
+				printf("Tempat, Tanggal Lahir \t: Bandung, 29 Juli 2002\n");
+				printf("Jenis Kelamin \t\t: Laki-laki\n");
+				printf("Agama \t\t\t: Islam\n");
+				printf("Alamat \t\t\t: Jalan Cibangkong Tengah RT.09/RW.11 NO.300/120\n");
+				//printf("Alamat Asal \t: Kp. Cidawolong 1 Rt 03/14 Des.Biru Kec.Majalaya Kab.Bandung\n");
+				printf("Nomor Telepon \t\t: 085624333058\n");
+				printf("E-mail \t\t\t: ozoramahadri02@gmail.com\n");
+				printf("Hobi \t\t\t: baca\n");
+				printf("Motto Hidup \t\t: gak ada yang gak bisa\n");
 			}
 		}
 }
