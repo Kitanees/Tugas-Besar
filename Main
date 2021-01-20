@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdbool.h>
+#include<string.h>
 //Authors : Arsal Fadilah && Nauval Ozora
 
 /*kumpulan modul*/
@@ -7,102 +8,306 @@ void LoadGame();
 void DisplayMenu();
 int InputMenu();
 void StartGame();
-    int ChooseEnemy();
-    int ChooseLevel();
-    void InGame();
-        void InpuNama(char nama[20]);
-        void PlayerVsPlayer();
-            int suit();
-            void Easy();
-                void Display3x3();
-                int Turn();
-                    void StartTime();
-                    char p_1_InputX();
-                    char p_2_InputO();
-                bool CekSel();
-                    bool CekBar();
-                    bool CekCol();
-                    bool CekDiagon();
-                        void GameOver();
-            void Medium();
-                void Display5x5();
-            void Hard();
-                void Display7x7();
-        void playerVsComputer();
-            char p_com_InputO();
+int ChooseEnemy();
+int ChooseLevel();
+void InGame();
+void InpuNama();
+void PlayerVsPlayer();
+int suit();
+void Easy(int menangSuit);
+void Display3x3();
+void persiapanMatrix();
+void Turn();
+void StartTime();
+void p_1_InputX(int* x, int* y);
+void p_2_InputO(int* x, int* y);
+bool CekSel(int x, int y);
+bool CekBar();
+bool CekCol();
+bool CekDiagon();
+void GameOver();
+void Medium(int menangSuit);
+void Display5x5();
+void Hard(int menangSuit);
+void Display7x7();
+void PlayerVsComputer();
+char p_com_InputO();
 void HighScores();
 void Help();
 void AboutAuthor();
 void exitGame();
 
-int main(){
+//variabel global
+int enemy;
+int level;
+char nama[20];
+char matrix_2D[8][8];
+bool mulai = true;
+
+int main() {
 
     LoadGame();
-    menu :
-        DisplayMenu();
-        switch(InputMenu()){
-            case 1 : StartGame(); break;
-            case 2 : HighScores(); break;
-            case 3 : Help(); break;
-            case 4 : AboutAuthor(); break;
-            case 5 : exitGame(); break;
-            default :
-                printf("WRONG INPUT NUMBER.\n");
-                printf("Pilih nomer aja salah, apalagi pilih pasangan hidup -.-\n\n");
-                system("pause");
-                system("cls");
-                goto menu;
-        }
+menu:
+    DisplayMenu();
+    switch (InputMenu()) {
+    case 1: StartGame(); break;
+    case 2: HighScores(); break;
+    case 3: Help(); break;
+    case 4: AboutAuthor(); break;
+    case 5: exitGame(); break;
+    default:
+        printf("WRONG INPUT NUMBER.\n");
+        printf("Pilih nomer aja salah, apalagi pilih pasangan hidup -.-\n\n");
+        system("pause");
+        system("cls");
+        goto menu;
+    }
 
     return 0;
 }
 
-void LoadGame(){}
+void LoadGame() {}
 
-void DisplayMenu(){}
+void DisplayMenu() {}
 
-int InputMenu(){
+int InputMenu() {
     int x;
 
-        scanf("%d", &x);
+    scanf_s("%d", &x);
 
     return x;
 }
 
-void StartGame(){
-    int enemy, level;
+void StartGame() {
 
     enemy = ChooseEnemy();
     level = ChooseLevel();
 
-    InGame(enemy, level);
+    InGame();
 
 }
 
-int ChooseEnemy(){}
-int ChooseLevel(){}
-void InGame(int enemy, int level){}
-void InpuNama(char nama[20]){}
-void PlayerVsPlayer(){}
-int suit(){}
-void Easy(){}
-void Display3x3(){}
-int Turn(){}
-void StartTime(){}
-char p_1_InputX(){}
-char p_2_InputO(){}
-bool CekSel(){}
-bool CekBar(){}
-bool CekCol(){}
-bool CekDiagon(){}
-void GameOver(){}
-void Medium(){}
-void Display5x5(){}
-void Hard(){}
-void Display7x7(){}
-void playerVsComputer(){}
-char p_com_InputO(){}
-void HighScores(){}
-void Help(){}
-void AboutAuthor(){}
-void exitGame(){}
+int ChooseEnemy() {
+    int x;
+
+    printf("Pilih Lawan : \n");
+    printf("1. Player Vs Player\n");
+    printf("2. Player Vs Computer\n\n");
+    printf("Pilihan kamu : ");
+    scanf_s("%d", &x);
+
+    return x;
+}
+int ChooseLevel() {
+    int x;
+
+    printf("Pilih Level : \n");
+    printf("1. Easy\n");
+    printf("2. Medium\n");
+    printf("2. Hard\n\n");
+    printf("Pilihan kamu : ");
+    scanf_s("%d", &x);
+
+    return x;
+}
+
+void InGame() {
+
+    switch (enemy) {
+    case 1: PlayerVsPlayer(); break;
+    case 2: PlayerVsComputer(); break;
+    }
+
+}
+
+void InpuNama() {
+
+    printf("nama kamu : ");
+    fgets(nama, sizeof(nama), stdin);
+    nama[strlen(nama) - 1] = '\0';
+    scanf("%[^\n]s", nama);
+
+}
+
+void PlayerVsPlayer() {
+    int menangSuit;
+
+    //fflush(stdin);
+    InpuNama();
+    menangSuit = suit();
+    switch (level) {
+    case 1: Easy(menangSuit); break;
+    case 2: Medium(menangSuit); break;
+    case 3: Hard(menangSuit); break;
+    }
+
+}
+int suit() {}
+void Easy(int menangSuit) {
+
+    persiapanMatrix();
+    Display3x3();
+
+    while (mulai) {
+        StartTime();
+        Turn(menangSuit);
+    }
+
+
+}
+void persiapanMatrix() {
+    char angkaCol, angkaBar;
+    int i, j;
+
+    angkaCol = '1';
+    for (i = 0; i < 4; i++) {
+        angkaBar = '0';
+        for (j = 0; j < 4; j++) {
+            if (i == 0) {
+                matrix_2D[i][j] = angkaBar;
+                angkaBar = angkaBar + 1;
+            }
+            else if (j == 0) {
+                matrix_2D[i][j] = angkaCol;
+                angkaCol = angkaCol + 1;
+            }
+            else {
+                matrix_2D[i][j] = '\0';
+            }
+        }
+    }
+}
+
+void Display3x3() {
+    int i, j;
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            printf("%c ", matrix_2D[i][j]);
+        }
+        printf("\n");
+    }
+
+}
+void Turn(int menangSuit) {
+    int bar = 0, col = 0;
+
+    if (enemy == 1 && menangSuit == 1) {
+        p_1_InputX(&bar, &col);
+        if (CekSel(bar, col)) {
+            matrix_2D[bar][col] = 'X';
+            Display3x3();
+        }
+        p_2_InputO(&bar, &col);
+        if (CekSel(bar, col)) {
+            matrix_2D[bar][col] = 'O';
+            Display3x3();
+        }
+    }
+    else if (enemy == 1 && menangSuit == 2) {
+        p_2_InputO(&bar, &col);
+        p_1_InputX(&bar, &col);
+    }
+    else if (enemy == 2 && menangSuit == 1) {
+        p_1_InputX(&bar, &col);
+        p_com_InputO();
+    }
+    else {
+        p_com_InputO();
+        p_1_InputX(&bar, &col);
+    }
+
+}
+void StartTime() {}
+void p_1_InputX(int* x, int* y) {
+    int baris, kolom;
+
+    printf("(X) input baris kolom : ");
+    scanf_s("%d %d", &baris, &kolom);
+
+    *x = baris;
+    *y = kolom;
+
+}
+void p_2_InputO(int* x, int* y) {
+    int baris, kolom;
+
+    printf("(O) input baris kolom : ");
+    scanf_s("%d %d", &baris, &kolom);
+
+    *x = baris;
+    *y = kolom;
+
+}
+bool CekSel(int x, int y) {
+
+    if (matrix_2D[x][y] == '\0') {
+        return true;
+    }
+    else {
+        return false;
+    }
+
+}
+bool CekBar() {}
+bool CekCol() {}
+bool CekDiagon() {}
+void GameOver() {}
+void Medium(int menangSuit) {}
+void Display5x5() {}
+void Hard(int menangSuit) {}
+void Display7x7() {}
+void PlayerVsComputer() {}
+char p_com_InputO() {}
+void HighScores() {}
+void Help() {
+printf("HELP");
+		printf("======================================================================================================\n");
+		printf("1. Player pertama akan diminta mengisi kolom dan baris yang diinginkan seusai keinginan\n");
+		printf("2. Giliran main akan dilempar ke player kedua setelah n(5,10, atau 15) detik\n");
+		printf("3. Player kedua akan mendapat gilirannya untuk mengisi kolom dan baris yang belum terisi\n");
+		printf("4. Langkah 1 - 3 akan diulangi terus sampai ada salah satu player yang berhasil\n");
+		printf("   mengurutkan X/O sebanyak tiga kali secara berurutan atau bidang permainan sudah penuh\n");
+		printf("5. Jika permainan sudah selesai, maka game akan meminta inputan untuk melanjutkan permainan atau tidak.");
+}
+void AboutAuthor() {
+int a;
+
+		//logaritma
+		printf("pilih salah satu author:1.Arsal Fadilah\n 		        2.Nauval Ozora Mahadri\n");
+		printf("Pilih No Author:");
+		scanf("%d", &a);
+
+		//cek kesalahan pilihan
+		if(a<1 || a>2){
+			system("cls");
+			printf("Nomer Author yang anda masukan salah !!!\n");
+            printf("Coba lagi\n");
+        system("pause");
+        system("cls");
+		}else{
+		if(a<2){
+				printf("Nama : Arsal Fadilah\n");
+				printf("Tempat, Tanggal Lahir : Bandung, 26 April 2002\n");
+				printf("Jenis Kelamin : Laki-laki\n");
+				printf("Agama : Islam\n");
+				printf("Alamat : Kp. Cidawolong 1 Rt 03/14 Des.Biru Kec.Majalaya Kab.Bandung\n");
+				printf("Nomor Telepon : 081214151280\n");
+				printf("E-mail : arsalfadilah2002@gmail.com\n");
+				printf("Hobi : Basket\n");
+				printf("Motto Hidup : Never give up ! Trust me its work");
+			}else{
+				printf("Nama : Nauval Ozora Mahadri\n");
+				printf("Tempat, Tanggal Lahir : Bandung, 29 Juli 2002\n");
+				printf("Jenis Kelamin : Laki-laki\n");
+				printf("Agama : Islam\n");
+				printf("Alamat : Jalan Cibangkong Tengah RT.09/RW.11 NO.300/120\n");
+				printf("Alamat Asal : Kp. Cidawolong 1 Rt 03/14 Des.Biru Kec.Majalaya Kab.Bandung\n");
+				printf("Nomor Telepon : 085624333058\n");
+				printf("E-mail : ozoramahadri02@gmail.com\n");
+				printf("Hobi : baca\n");
+				printf("Motto Hidup : gak ada yang gak bisa\n");
+			}
+		}
+}
+void exitGame() {}
