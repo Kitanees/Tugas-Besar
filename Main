@@ -15,7 +15,7 @@ void InpuNama();
 void PlayerVsPlayer();
 int suit();
 void Easy(int menangSuit);
-void Display3x3();
+void Display();
 void persiapanMatrix();
 void Turn();
 void StartTime();
@@ -27,9 +27,9 @@ bool CekCol();
 bool CekDiagon();
 void GameOver();
 void Medium(int menangSuit);
-void Display5x5();
+//void Display5x5();
 void Hard(int menangSuit);
-void Display7x7();
+//void Display7x7();
 void PlayerVsComputer();
 char p_com_InputO();
 void HighScores();
@@ -40,6 +40,7 @@ void exitGame();
 //variabel global
 int enemy;
 int level;
+int ukuran;
 char nama[20];
 char matrix_2D[8][8];
 bool mulai = true;
@@ -98,6 +99,7 @@ int ChooseEnemy() {
 
     return x;
 }
+
 int ChooseLevel() {
     int x;
 
@@ -142,27 +144,31 @@ void PlayerVsPlayer() {
     }
 
 }
+
 int suit() {}
+
 void Easy(int menangSuit) {
 
+    ukuran = 4;
+
     persiapanMatrix();
-    Display3x3();
+    DisplayBoard();
 
     while (mulai) {
         StartTime();
         Turn(menangSuit);
     }
 
-
 }
+
 void persiapanMatrix() {
     char angkaCol, angkaBar;
     int i, j;
 
     angkaCol = '1';
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < ukuran ; i++) {
         angkaBar = '0';
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < ukuran; j++) {
             if (i == 0) {
                 matrix_2D[i][j] = angkaBar;
                 angkaBar = angkaBar + 1;
@@ -178,17 +184,18 @@ void persiapanMatrix() {
     }
 }
 
-void Display3x3() {
+void DisplayBoard(){
     int i, j;
 
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < 4; j++) {
+    for (i = 0; i < ukuran; i++) {
+        for (j = 0; j < ukuran; j++) {
             printf("%c ", matrix_2D[i][j]);
         }
         printf("\n");
     }
 
 }
+
 void Turn(int menangSuit) {
     int bar = 0, col = 0;
 
@@ -196,29 +203,98 @@ void Turn(int menangSuit) {
         p_1_InputX(&bar, &col);
         if (CekSel(bar, col)) {
             matrix_2D[bar][col] = 'X';
-            Display3x3();
+            DisplayBoard();
+            if(CekBar()){
+                mulai = false;
+            } else if(CekCol()){
+                mulai = false;
+            } else if(CekDiagon()){
+                mulai = false;
+            }
         }
-        p_2_InputO(&bar, &col);
-        if (CekSel(bar, col)) {
-            matrix_2D[bar][col] = 'O';
-            Display3x3();
+
+        if(mulai){
+            p_2_InputO(&bar, &col);
+            if (CekSel(bar, col)) {
+                matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    mulai = false;
+                } else if(CekCol()){
+                    mulai = false;
+                } else if(CekDiagon()){
+                    mulai = false;
+                }
+            }
         }
     }
     else if (enemy == 1 && menangSuit == 2) {
         p_2_InputO(&bar, &col);
-        p_1_InputX(&bar, &col);
+        if (CekSel(bar, col)) {
+            matrix_2D[bar][col] = 'O';
+            DisplayBoard();
+            if(CekBar()){
+                mulai = false;
+            } else if(CekCol()){
+                mulai = false;
+            } else if(CekDiagon()){
+                mulai = false;
+            }
+        }
+        if(mulai){
+            p_1_InputX(&bar, &col);
+            if (CekSel(bar, col)) {
+                matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    mulai = false;
+                } else if(CekCol()){
+                    mulai = false;
+                } else if(CekDiagon()){
+                    mulai = false;
+                }
+            }
+        }
     }
     else if (enemy == 2 && menangSuit == 1) {
         p_1_InputX(&bar, &col);
-        p_com_InputO();
+        if (CekSel(bar, col)) {
+            matrix_2D[bar][col] = 'X';
+            DisplayBoard();
+            if(CekBar()){
+                mulai = false;
+            } else if(CekCol()){
+                mulai = false;
+            } else if(CekDiagon()){
+                mulai = false;
+            }
+        }
+        if(mulai){
+            p_com_InputO();
+        }
     }
     else {
         p_com_InputO();
-        p_1_InputX(&bar, &col);
+        if(mulai){
+            p_1_InputX(&bar, &col);
+            if (CekSel(bar, col)) {
+                matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    mulai = false;
+                } else if(CekCol()){
+                    mulai = false;
+                } else if(CekDiagon()){
+                    mulai = false;
+                }
+            }
+        }
     }
 
 }
+
 void StartTime() {}
+
 void p_1_InputX(int* x, int* y) {
     int baris, kolom;
 
@@ -229,6 +305,7 @@ void p_1_InputX(int* x, int* y) {
     *y = kolom;
 
 }
+
 void p_2_InputO(int* x, int* y) {
     int baris, kolom;
 
@@ -239,6 +316,7 @@ void p_2_InputO(int* x, int* y) {
     *y = kolom;
 
 }
+
 bool CekSel(int x, int y) {
 
     if (matrix_2D[x][y] == '\0') {
@@ -249,33 +327,180 @@ bool CekSel(int x, int y) {
     }
 
 }
-bool CekBar() {}
-bool CekCol() {}
-bool CekDiagon() {}
+
+bool CekBar() {
+    int count=0;
+    int i, j;
+
+    //cek bar X
+    for(i=1; i<ukuran; i++){
+    count = 0;
+        for(j=1; j<ukuran; j++){
+            if(matrix_2D[i][j]=='X'){
+                count++;
+            }
+        }
+        if(count==(ukuran-1)){
+            return true;
+        }
+    }
+
+    //cek bar O
+    for(i=1; i<ukuran; i++){
+    count = 0;
+        for(j=1; j<ukuran; j++){
+            if(matrix_2D[i][j]=='O'){
+                count++;
+            }
+        }
+        if(count==(ukuran-1)){
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+bool CekCol() {
+    int count=0;
+    int i, j;
+
+    //cek Col X
+    for(i=1; i<ukuran; i++){
+    count = 0;
+        for(j=1; j<ukuran; j++){
+            if(matrix_2D[j][i]=='X'){
+                count++;
+            }
+        }
+        if(count==(ukuran-1)){
+            return true;
+        }
+    }
+
+    //cek Col O
+    for(i=1; i<ukuran; i++){
+    count = 0;
+        for(j=1; j<ukuran; j++){
+            if(matrix_2D[j][i]=='O'){
+                count++;
+            }
+        }
+        if(count==(ukuran-1)){
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+bool CekDiagon() {
+    int count=0;
+    int i, j;
+
+    //cek diagon left to right X
+    for(i=1; i<ukuran; i++){
+        for(j=1; j<ukuran; j++){
+            if(i==j){
+                if(matrix_2D[j][i]=='X'){
+                    count++;
+                }
+            }
+        }
+    }
+
+    if(count==(ukuran-1)){
+        return true;
+    }
+
+    //cek diagon rifht to left X
+    count = 0;
+    for(i=1; i<ukuran; i++){
+        for(j=ukuran-1; j>=1; j--){
+            if(i+j==ukuran){
+                if(matrix_2D[j][i]=='X'){
+                    count++;
+                }
+            }
+        }
+    }
+
+    if(count==(ukuran-1)){
+        return true;
+    }
+
+    //cek diagon left to right O
+    count = 0;
+    for(i=1; i<ukuran; i++){
+        for(j=1; j<ukuran; j++){
+            if(i==j){
+                if(matrix_2D[j][i]=='O'){
+                    count++;
+                }
+            }
+        }
+    }
+
+    if(count==(ukuran-1)){
+        return true;
+    }
+
+    //cek diagon rifht to left O
+    count = 0;
+    for(i=1; i<ukuran; i++){
+        for(j=ukuran-1; j>=1; j--){
+            if(i+j==ukuran){
+                if(matrix_2D[j][i]=='O'){
+                    count++;
+                }
+            }
+        }
+    }
+
+    if(count==(ukuran-1)){
+        return true;
+    }
+
+    //jika tidak sama
+    return false;
+
+}
+
 void GameOver() {}
+
 void Medium(int menangSuit) {}
+
 void Display5x5() {}
+
 void Hard(int menangSuit) {}
+
 void Display7x7() {}
+
 void PlayerVsComputer() {}
+
 char p_com_InputO() {}
+
 void HighScores() {}
+
 void Help() {
-printf("HELP");
+printf("\t\t\t\t\t\tHELP\n");
 		printf("======================================================================================================\n");
 		printf("1. Player pertama akan diminta mengisi kolom dan baris yang diinginkan seusai keinginan\n");
 		printf("2. Giliran main akan dilempar ke player kedua setelah n(5,10, atau 15) detik\n");
 		printf("3. Player kedua akan mendapat gilirannya untuk mengisi kolom dan baris yang belum terisi\n");
 		printf("4. Langkah 1 - 3 akan diulangi terus sampai ada salah satu player yang berhasil\n");
 		printf("   mengurutkan X/O sebanyak tiga kali secara berurutan atau bidang permainan sudah penuh\n");
-		printf("5. Jika permainan sudah selesai, maka game akan meminta inputan untuk melanjutkan permainan atau tidak.");
+		printf("5. Jika permainan sudah selesai, maka game akan meminta inputan untuk melanjutkan permainan atau tidak.\n");
 }
+
 void AboutAuthor() {
 int a;
 
 		//logaritma
-		printf("pilih salah satu author:1.Arsal Fadilah\n 		        2.Nauval Ozora Mahadri\n");
-		printf("Pilih No Author:");
+		printf("pilih salah satu author: 1. Arsal Fadilah\n\t\t\t 2. Nauval Ozora Mahadri\n");
+		printf("Pilih no author : ");
 		scanf("%d", &a);
 
 		//cek kesalahan pilihan
@@ -310,4 +535,5 @@ int a;
 			}
 		}
 }
+
 void exitGame() {}
