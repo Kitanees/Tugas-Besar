@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdbool.h>
 #include<string.h>
+#include<time.h>
 //Authors : Arsal Fadilah && Nauval Ozora
 
 /*kumpulan modul*/
@@ -17,14 +18,16 @@ int suit();
 void Easy(int menangSuit);
 void DisplayBoard();
 void persiapanMatrix();
-void Turn();
-void StartTime();
-void p_1_InputX(int* x, int* y);
-void p_2_InputO(int* x, int* y);
+void PlayTheGame();
+int StartTime();
+int EndTime();
+void p_1_InputX(int* x, int* y, double *waktuInput);
+void p_2_InputO(int* x, int* y, double *waktuInput);
 bool CekSel(int x, int y);
 bool CekBar();
 bool CekCol();
 bool CekDiagon();
+bool CekPenuh();
 void GameOver();
 void Medium(int menangSuit);
 void Hard(int menangSuit);
@@ -39,7 +42,9 @@ void exitGame();
 int enemy;
 int level;
 int ukuran;
+double waktu;
 char nama[20];
+char nama_2[20];
 char matrix_2D[10][10];
 bool mulai = true;
 
@@ -85,7 +90,7 @@ void DisplayMenu() {
     printf("3. Help\n");
     printf("4. About Author\n");
     printf("5. Exit\n\n");
-    printf("please input number your choose : ");
+    printf("please input number of menu, your choose : ");
 
 }
 
@@ -93,6 +98,7 @@ int InputMenu() {
     int x;
 
     scanf("%d", &x);
+    system("cls");
 
     return x;
 }
@@ -114,6 +120,7 @@ int ChooseEnemy() {
     printf("2. Player Vs Computer\n\n");
     printf("Pilihan kamu : ");
     scanf("%d", &x);
+    system("cls");
 
     return x;
 }
@@ -124,9 +131,10 @@ int ChooseLevel() {
     printf("Pilih Level : \n");
     printf("1. Easy\n");
     printf("2. Medium\n");
-    printf("2. Hard\n\n");
+    printf("3. Hard\n\n");
     printf("Pilihan kamu : ");
     scanf("%d", &x);
+    system("cls");
 
     return x;
 }
@@ -142,10 +150,18 @@ void InGame() {
 
 void InpuNama() {
 
-    printf("nama kamu : ");
+    printf("nama player 1 : ");
     fgets(nama, sizeof(nama), stdin);
     nama[strlen(nama) - 1] = '\0';
     scanf("%[^\n]s", nama);
+    printf("nama player 2 : ");
+    fgets(nama_2, sizeof(nama_2), stdin);
+    nama_2[strlen(nama_2) - 1] = '\0';
+    scanf("%[^\n]s", nama_2);
+    //printf("\n");
+    //system("cls");
+    //fgets(nama, sizeof(nama), stdin);
+    //fgets(nama_2, sizeof(nama_2), stdin);
 
 }
 
@@ -168,13 +184,13 @@ int suit() {}
 void Easy(int menangSuit) {
 
     ukuran = 4;
+    waktu = 10;
 
     persiapanMatrix();
     DisplayBoard();
 
     while (mulai) {
-        StartTime();
-        Turn(menangSuit);
+        PlayTheGame(menangSuit);
     }
 
 }
@@ -205,6 +221,8 @@ void persiapanMatrix() {
 void DisplayBoard(){
     int i, j;
 
+    printf("%s\t vs \t%s\n", nama, nama_2);
+
     for (i = 0; i < ukuran; i++) {
         for (j = 0; j < ukuran; j++) {
             if(matrix_2D[i][j]=='\0'){
@@ -218,12 +236,15 @@ void DisplayBoard(){
 
 }
 
-void Turn(int menangSuit) {
+void PlayTheGame(int menangSuit) {
     int bar = 0, col = 0;
+    double waktuInput = 0;
 
     if (enemy == 1 && menangSuit == 1) {
-        p_1_InputX(&bar, &col);
-        if (CekSel(bar, col)) {
+        //StartTime(waktu);
+        p_1_InputX(&bar, &col, &waktuInput);
+        if (CekSel(bar, col) && waktuInput<=waktu) {
+            system("cls");
             matrix_2D[bar][col] = 'X';
             DisplayBoard();
             if(CekBar()){
@@ -232,12 +253,22 @@ void Turn(int menangSuit) {
                 mulai = false;
             } else if(CekDiagon()){
                 mulai = false;
+            } else if(CekPenuh()){
+                mulai = false;
             }
+        } else if(waktuInput>waktu){
+            printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+        } else {
+            printf("kotak penuh, giliran diganti !\n");
         }
 
+        GameOver();
+
         if(mulai){
-            p_2_InputO(&bar, &col);
-            if (CekSel(bar, col)) {
+            //system("cls");
+            p_2_InputO(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
                 matrix_2D[bar][col] = 'O';
                 DisplayBoard();
                 if(CekBar()){
@@ -246,13 +277,22 @@ void Turn(int menangSuit) {
                     mulai = false;
                 } else if(CekDiagon()){
                     mulai = false;
+                } else if(CekPenuh()){
+                    mulai = false;
                 }
+            } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else {
+                printf("kotak penuh, giliran diganti !\n");
             }
+            GameOver();
         }
+
     }
     else if (enemy == 1 && menangSuit == 2) {
-        p_2_InputO(&bar, &col);
-        if (CekSel(bar, col)) {
+        p_2_InputO(&bar, &col, &waktuInput);
+        if (CekSel(bar, col) && waktuInput<=waktu) {
+            system("cls");
             matrix_2D[bar][col] = 'O';
             DisplayBoard();
             if(CekBar()){
@@ -261,11 +301,21 @@ void Turn(int menangSuit) {
                 mulai = false;
             } else if(CekDiagon()){
                 mulai = false;
+            } else if(CekPenuh()){
+                mulai = false;
             }
+        } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+        } else {
+            printf("kotak penuh, giliran diganti !\n");
         }
+
+        GameOver();
+
         if(mulai){
-            p_1_InputX(&bar, &col);
-            if (CekSel(bar, col)) {
+            p_1_InputX(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
                 matrix_2D[bar][col] = 'X';
                 DisplayBoard();
                 if(CekBar()){
@@ -274,13 +324,22 @@ void Turn(int menangSuit) {
                     mulai = false;
                 } else if(CekDiagon()){
                     mulai = false;
+                } else if(CekPenuh()){
+                    mulai = false;
                 }
+            } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else {
+                printf("kotak penuh, giliran diganti !\n");
             }
+            GameOver();
         }
+
     }
     else if (enemy == 2 && menangSuit == 1) {
-        p_1_InputX(&bar, &col);
-        if (CekSel(bar, col)) {
+        p_1_InputX(&bar, &col, &waktuInput);
+        if (CekSel(bar, col) && waktuInput<=waktu) {
+            system("cls");
             matrix_2D[bar][col] = 'X';
             DisplayBoard();
             if(CekBar()){
@@ -289,17 +348,29 @@ void Turn(int menangSuit) {
                 mulai = false;
             } else if(CekDiagon()){
                 mulai = false;
+            } else if(CekPenuh()){
+                mulai = false;
             }
+        } else if(waktuInput>waktu){
+            printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+        } else {
+            printf("kotak penuh, giliran diganti !\n");
         }
+        GameOver();
+
         if(mulai){
             p_com_InputO();
+            GameOver();
         }
     }
     else {
         p_com_InputO();
+        GameOver();
+
         if(mulai){
-            p_1_InputX(&bar, &col);
-            if (CekSel(bar, col)) {
+            p_1_InputX(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
                 matrix_2D[bar][col] = 'X';
                 DisplayBoard();
                 if(CekBar()){
@@ -308,35 +379,65 @@ void Turn(int menangSuit) {
                     mulai = false;
                 } else if(CekDiagon()){
                     mulai = false;
+                } else if(CekPenuh()){
+                    mulai = false;
                 }
+            } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else {
+                printf("kotak penuh, giliran diganti !\n");
             }
+            GameOver();
         }
     }
 
 }
 
-void StartTime() {}
+int StartTime() {
+    clock_t startInput;
+    startInput = clock();
 
-void p_1_InputX(int* x, int* y) {
-    int baris, kolom;
+    return startInput;
+}
 
+int EndTime() {
+    clock_t endInput;
+    endInput = clock();
+
+    return endInput;
+}
+
+void p_1_InputX(int* x, int* y, double *waktuInput) {
+    int baris=0, kolom=0;
+    double time_taken=0;
+    int t;
+
+    //StartTime
+    t = StartTime();
     printf("(X) input baris kolom : ");
     scanf("%d %d", &baris, &kolom);
+    t = EndTime() - t;
 
     *x = baris;
     *y = kolom;
+    *waktuInput = ((double)t)/CLOCKS_PER_SEC;
 
 }
 
-void p_2_InputO(int* x, int* y) {
-    int baris, kolom;
+void p_2_InputO(int* x, int* y, double *waktuInput) {
+    int baris=0, kolom=0;
+    double time_taken=0;
+    int t;
 
+    //StartTime
+    t = StartTime();
     printf("(O) input baris kolom : ");
     scanf("%d %d", &baris, &kolom);
+    t = EndTime() - t;
 
     *x = baris;
     *y = kolom;
-
+    *waktuInput = ((double)t)/CLOCKS_PER_SEC;
 }
 
 bool CekSel(int x, int y) {
@@ -533,18 +634,38 @@ bool CekDiagon() {
 
 }
 
+bool CekPenuh(){
+    int i , j, count=0;
+    int penuh = ukuran - 1;
+    penuh = penuh * penuh;
+
+    for(i=1; i<ukuran; i++){
+        for(j=1; j<ukuran; j++){
+            if(matrix_2D[i][j]!='\0'){
+                count++;
+            }
+        }
+    }
+
+    if(count==penuh){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void GameOver() {}
 
 void Medium(int menangSuit) {
 
     ukuran = 6;
+    waktu = 7;
 
     persiapanMatrix();
     DisplayBoard();
 
     while (mulai) {
-        StartTime();
-        Turn(menangSuit);
+        PlayTheGame(menangSuit);
     }
 
 }
@@ -552,13 +673,14 @@ void Medium(int menangSuit) {
 void Hard(int menangSuit) {
 
     ukuran = 8;
+    waktu = 5;
 
     persiapanMatrix();
     DisplayBoard();
 
     while (mulai) {
         StartTime();
-        Turn(menangSuit);
+        PlayTheGame(menangSuit);
     }
 
 }
