@@ -17,7 +17,7 @@ int suit();
 void Easy(int menangSuit);
 void DisplayBoard();
 void persiapanMatrix();
-void PlayTheGame();
+void PlayTheGame(int menangSuit, int bonus);
 int StartTime();
 int EndTime();
 void p_1_InputX(int* x, int* y, double *waktuInput);
@@ -182,14 +182,9 @@ void InpuNama() {
         fgets(data.nama, sizeof(data.nama), stdin);
         data.nama[strlen(data.nama) - 1] = '\0';
         scanf("%[^\n]s", data.nama);
-        //fgets(data.nama_2, sizeof(data.nama_2), stdin);
-        //data.nama_2[strlen(data.nama_2) - 1] = '\0';
-        //data.nama_2[20]= "ArVa_Com";
         strcpy(data.nama_2, "Arva_Com");
         printf("nama komputer : %s\n", data.nama_2);
         system("pause");
-        //fgets(data.nama_2, sizeof(data.nama_2), stdin);
-        //data.nama_2[strlen(data.nama_2) - 1] = '\0';
 
     }
 
@@ -346,6 +341,7 @@ int suit() {
 
 void Easy(int menangSuit) {
 
+    int bonus = 300;
     ukuran = 4;
     waktu = 10;
 
@@ -353,12 +349,13 @@ void Easy(int menangSuit) {
     DisplayBoard();
 
     while (mulai) {
-        PlayTheGame(menangSuit);
+        PlayTheGame(menangSuit, bonus);
     }
 
     system("cls");
     DisplayBoard();
     printf("\nGAME OVER\n");
+    HighScores();
 
 }
 
@@ -404,7 +401,7 @@ void DisplayBoard(){
 
 }
 
-void PlayTheGame(int menangSuit) {
+void PlayTheGame(int menangSuit, int bonus) {
     int bar = 0, col = 0;
     double waktuInput = 0;
 
@@ -427,7 +424,7 @@ void PlayTheGame(int menangSuit) {
             //Hitung Highscores
             if(!mulai){
                 data.score_1++;
-                data.score_1 = data.score_1*(waktu-waktuInput);
+                data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
             }
 
         } else if(waktuInput>waktu){
@@ -457,7 +454,7 @@ void PlayTheGame(int menangSuit) {
 
                 if(!mulai){
                     data.score_2++;
-                    data.score_2 = data.score_2*(waktu-waktuInput);
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
                 }
 
             } else if(waktuInput>waktu){
@@ -487,7 +484,7 @@ void PlayTheGame(int menangSuit) {
 
             if(!mulai){
                 data.score_2++;
-                data.score_2 = data.score_2*(waktu-waktuInput);
+                data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
             }
 
         } else if(waktuInput>waktu){
@@ -516,7 +513,7 @@ void PlayTheGame(int menangSuit) {
 
                 if(!mulai){
                     data.score_1++;
-                    data.score_1 = data.score_1*(waktu-waktuInput);
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
 
             } else if(waktuInput>waktu){
@@ -546,7 +543,7 @@ void PlayTheGame(int menangSuit) {
 
             if(!mulai){
                 data.score_1++;
-                data.score_1 = data.score_1*(waktu-waktuInput);
+                data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
             }
 
         } else if(waktuInput>waktu){
@@ -583,7 +580,7 @@ void PlayTheGame(int menangSuit) {
 
                 if(!mulai){
                     data.score_1++;
-                    data.score_1 = data.score_1*(waktu-waktuInput);
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
 
             } else if(waktuInput>waktu){
@@ -921,6 +918,7 @@ void GameOver() {
 
 void Medium(int menangSuit) {
 
+    int bonus = 120;
     ukuran = 6;
     waktu = 7;
 
@@ -928,17 +926,20 @@ void Medium(int menangSuit) {
     DisplayBoard();
 
     while (mulai) {
-        PlayTheGame(menangSuit);
+        PlayTheGame(menangSuit, bonus);
     }
 
     system("cls");
     DisplayBoard();
     printf("\nGAME OVER\n");
 
+    HighScores();
+
 }
 
 void Hard(int menangSuit) {
 
+    int bonus = 150;
     ukuran = 8;
     waktu = 5;
 
@@ -946,13 +947,13 @@ void Hard(int menangSuit) {
     DisplayBoard();
 
     while (mulai) {
-        PlayTheGame(menangSuit);
+        PlayTheGame(menangSuit, bonus);
     }
 
     system("cls");
     DisplayBoard();
     printf("\nGAME OVER\n");
-
+    HighScores();
 }
 
 void PlayerVsComputer() {
@@ -970,7 +971,69 @@ void PlayerVsComputer() {
 
 char p_com_InputO() {}
 
-void HighScores() {}
+void HighScores() {
+
+    char c;
+
+    struct formatHS{
+        char namaPemenang[20];
+        int skor;
+    }tulis;
+
+    /*open file for writing appending*/
+    if(ukuran!=0){
+        FILE *outfile;
+
+        outfile = fopen("HighScores.dat", "ab");
+
+        //check menang kalah
+        if(data.score_1>data.score_2){
+            strcpy(tulis.namaPemenang, data.nama);
+            tulis.skor = data.score_1;
+        } else {
+            strcpy(tulis.namaPemenang, data.nama_2);
+            tulis.skor = data.score_2;
+        }
+
+        //writing file
+        fwrite(&tulis, sizeof(struct formatHS), 1, outfile);
+
+        //check if file not succed write
+        if(fwrite != 0){
+            printf("High Score Berhasil disimpan\n");
+        } else {
+            printf("sorry ada masalah :(\n");
+        }
+
+        fclose(outfile);
+    }
+
+
+    /*open file for read and display*/
+
+    printf("Anda mau melihat High Score ? (y/t) : ");
+    //input \n yg terbawa sebelumnya
+    scanf("%c", &c);
+    //input pilihannya
+    scanf("%c", &c);
+
+    if(c == 'y'){
+        FILE *infile;
+        infile = fopen("HighScores.dat", "rb");
+
+        if(infile == NULL){
+            printf("Ah, sorry, file tidak ditemukan\n");
+            exit(0);
+        }
+        printf("Nama\t\t\tSkor\n");
+        while(fread(&tulis, sizeof(struct formatHS), 1, infile)){
+            printf("%s\t\t\t%d\n", tulis.namaPemenang, tulis.skor);
+        }
+
+        fclose(infile);
+    }
+
+}
 
 void Help() {
 printf("\t\t\t\t\t\tHELP\n");
