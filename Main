@@ -201,6 +201,7 @@ void PlayerVsPlayer() {
 }
 
 int suit() {
+		system("cls");
 		//Deklarasi
 		int kom, P,s,i;
 		//Deskripsi: merandom nomor suwit computer
@@ -215,56 +216,123 @@ int suit() {
 		do{
 			system("cls");
 			srand(time(0));//1.Batu 2.Gunting 3.Kertas
-			P =rand()%3+1;
-			kom=rand()%3+1;
-				if(kom==1){
-					printf("KOMPUTER MENDAPATKAN BATU\n");
-					if(P==1){
-						printf("PLAYER MENDAPATKAN BATU\n");
-						printf("HASIL SERI!!! ULANGI LAGI!");
+			switch(enemy){
+				case '1':
+					P =rand()%3+1;
+					kom=rand()%3+1;
+						if(kom==1){
+							printf("PLAYER 2 MENDAPATKAN BATU\n");
+							if(P==1){
+								printf("PLAYER 1 MENDAPATKAN BATU\n");
+								printf("HASIL SERI!!! ULANGI LAGI!");
+							}
+							else if(P==2){
+								printf("PLAYER 1 MENDAPATKAN GUNTING\n");
+								printf("PLAYER 2 BERMAIN TERLEBIH DAHULU");
+								return 2;
+							}
+							else if(P==3){
+								printf("PLAYER 1 MENDAPATKAN KERTAS\n");
+								printf("PLAYER 1 BERMAIN TERLEBIH DAHULU");
+								return 1;
+							}
+						}
+						else if(kom==2){
+							printf("PLAYER 2 MENDAPATKAN GUNTING\n");
+							if(P==1){
+								printf("PLAYER 1 MENDAPATKAN BATU\n");
+								printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								return 1;
+							}
+							else if(P==2){
+								printf("PLAYER 1 MENDAPATKAN GUNTING\n");
+								printf("HASIL SERI!!! ULANGI LAGI!");
+							}
+							else if(P==3){
+								printf("PLAYER 1 MENDAPATKAN KERTAS\n");
+								printf("PLAYER 2 BERMAIN TERLEBIH DAHULU");
+								return 2;
+							}
+						}
+						else if(kom==3){
+							printf("PLAYER 2 MENDAPATKAN KERTAS\n");
+							if(P==1){
+								printf("PLAYER 1 MENDAPATKAN BATU\n");
+								printf("PLAYER 2 BERMAIN TERLEBIH DAHULU");
+								return 2;
+							}
+							else if(P==2){
+								printf("PLAYER 1 MENDAPATKAN GUNTING\n");
+								printf("PLAYER 1 BERMAIN TERLEBIH DAHULU");
+								return 1;
+							}
+							else if(P==3){
+								printf("PLAYER 1 MENDAPATKAN KERTAS\n");
+								printf("HASIL SERI!!! ULANGI LAGI!");
+							}
+						}
+				break;
+				case '2':
+					P =rand()%3+1;
+					kom=rand()%3+1;
+						if(kom==1){
+							printf("KOMPUTER MENDAPATKAN BATU\n");
+							if(P==1){
+								printf("PLAYER MENDAPATKAN BATU\n");
+								printf("HASIL SERI!!! ULANGI LAGI!");
+							}
+							else if(P==2){
+								printf("Player mendapatkan Gunting\n");
+								printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+								return 2;
+							}
+							else if(P==3){
+								printf("PLAYER MENDAPATKAN KERTAS\n");
+								printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								return 1;
+							}
+						}
+						else if(kom==2){
+							printf("KOMPUTER MENDAPATKAN GUNTING\n");
+							if(P==1){
+								printf("PLAYER MENDAPATKAN BATU\n");
+								printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								return 1;
+							}
+							else if(P==2){
+								printf("PLAYER MENDAPATKAN GUNTING\n");
+								printf("HASIL SERI!!! ULANGI LAGI!");
+							}
+							else if(P==3){
+								printf("PLAYER MENDAPATKAN KERTAS\n");
+								printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+								return 2;
+							}
+						}
+						else if(kom==3){
+							printf("KOMPUTER MENDAPATKAN KERTAS\n");
+							if(P==1){
+								printf("PLAYER MENDAPATKAN BATU\n");
+								printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+								return 2;
+							}
+							else if(P==2){
+								printf("PLAYER MENDAPATKAN GUNTING\n");
+								printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								return 1;
+							}
+							else if(P==3){
+								printf("PLAYER MENDAPATKAN KERTAS\n");
+								printf("HASIL SERI!!! ULANGI LAGI!");
+							}
+						}
+						break;
+						}
+					}while(P==kom);
+					for(i=0;i<999999999;i++){
 					}
-					else if(P==2){
-						printf("Player mendapatkan Gunting\n");
-						printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
-					}
-					else if(P==3){
-						printf("PLAYER MENDAPATKAN KERTAS\n");
-						printf("PLAYER BERMAIN TERLEBIH DAHULU");
-					}
-				}
-				else if(kom==2){
-					printf("KOMPUTER MENDAPATKAN GUNTING\n");
-					if(P==1){
-						printf("PLAYER MENDAPATKAN BATU\n");
-						printf("PLAYER BERMAIN TERLEBIH DAHULU");
-					}
-					else if(P==2){
-						printf("PLAYER MENDAPATKAN GUNTING\n");
-						printf("HASIL SERI!!! ULANGI LAGI!");
-					}
-					else if(P==3){
-						printf("PLAYER MENDAPATKAN KERTAS\n");
-						printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
-					}
-				}
-				else if(kom==3){
-					printf("KOMPUTER MENDAPATKAN KERTAS\n");
-					if(P==1){
-						printf("PLAYER MENDAPATKAN BATU\n");
-						printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
-					}
-					else if(P==2){
-						printf("PLAYER MENDAPATKAN GUNTING\n");
-						printf("PLAYER BERMAIN TERLEBIH DAHULU");
-					}
-					else if(P==3){
-						printf("PLAYER MENDAPATKAN KERTAS\n");
-						printf("HASIL SERI!!! ULANGI LAGI!");
-					}
-				}
-		}while(P==kom);
-		return 0;
-	}
+					system("cls");
+		}
 
 void Easy(int menangSuit) {
 
