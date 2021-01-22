@@ -11,7 +11,6 @@ int InputMenu();
 void StartGame();
 int ChooseEnemy();
 int ChooseLevel();
-void InGame();
 void InpuNama();
 void PlayerVsPlayer();
 int suit();
@@ -39,18 +38,19 @@ void AboutAuthor();
 void exitGame();
 
 //variabel global
-int enemy;
-int level;
-int ukuran;
+int enemy, level, ukuran;
 double waktu;
-char nama[20];
-char nama_2[20];
+struct dataPlayer {
+    int score;
+    char nama[20];
+    char nama_2[20];
+} data;
 char matrix_2D[10][10];
 bool mulai = true;
 
 int main() {
 
-    LoadGame();
+    //LoadGame();
 menu:
     DisplayMenu();
     switch (InputMenu()) {
@@ -97,7 +97,10 @@ void DisplayMenu() {
 int InputMenu() {
     int x;
 
-    scanf("%d", &x);
+    while(scanf("%d", &x)!= 1 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
+
     system("cls");
 
     return x;
@@ -108,7 +111,10 @@ void StartGame() {
     enemy = ChooseEnemy();
     level = ChooseLevel();
 
-    InGame();
+    switch (enemy) {
+        case 1: PlayerVsPlayer(); break;
+        case 2: PlayerVsComputer(); break;
+    }
 
 }
 
@@ -119,10 +125,20 @@ int ChooseEnemy() {
     printf("1. Player Vs Player\n");
     printf("2. Player Vs Computer\n\n");
     printf("Pilihan kamu : ");
-    scanf("%d", &x);
+    while(scanf("%d", &x)!= 1 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
     system("cls");
 
-    return x;
+    if(x==1 || x==2){
+        return x;
+    }else {
+        printf("Ops, anda salah input\n");
+        system("pause");
+        system("cls");
+        return ChooseEnemy();
+    }
+
 }
 
 int ChooseLevel() {
@@ -133,48 +149,51 @@ int ChooseLevel() {
     printf("2. Medium\n");
     printf("3. Hard\n\n");
     printf("Pilihan kamu : ");
-    scanf("%d", &x);
+    while(scanf("%d", &x)!= 1 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
     system("cls");
 
-    return x;
-}
-
-void InGame() {
-
-    switch (enemy) {
-    case 1: PlayerVsPlayer(); break;
-    case 2: PlayerVsComputer(); break;
+    if(x>=1 && x<=3){
+       return x;
+    } else {
+        printf("Ops anda salah menginputkan !\n");
+        system("pause");
+        system("cls");
+        return ChooseLevel();
     }
 
 }
 
 void InpuNama() {
 
-    printf("nama player 1 : ");
-    fgets(nama, sizeof(nama), stdin);
-    nama[strlen(nama) - 1] = '\0';
-    scanf("%[^\n]s", nama);
-    printf("nama player 2 : ");
-    fgets(nama_2, sizeof(nama_2), stdin);
-    nama_2[strlen(nama_2) - 1] = '\0';
-    scanf("%[^\n]s", nama_2);
-    //printf("\n");
-    //system("cls");
-    //fgets(nama, sizeof(nama), stdin);
-    //fgets(nama_2, sizeof(nama_2), stdin);
+    if(enemy==1){
+        printf("nama player 1 : ");
+        fgets(data.nama, sizeof(data.nama), stdin);
+        data.nama[strlen(data.nama) - 1] = '\0';
+        scanf("%[^\n]s", data.nama);
+        printf("nama player 2 : ");
+        fgets(data.nama_2, sizeof(data.nama_2), stdin);
+        data.nama_2[strlen(data.nama_2) - 1] = '\0';
+        scanf("%[^\n]s", data.nama_2);
+    } else {
+        printf("nama kamu : ");
+        fgets(data.nama, sizeof(data.nama), stdin);
+        data.nama[strlen(data.nama) - 1] = '\0';
+        scanf("%[^\n]s", data.nama);
+    }
 
 }
 
 void PlayerVsPlayer() {
     int menangSuit;
 
-    //fflush(stdin);
     InpuNama();
     menangSuit = suit();
     switch (level) {
-    case 1: Easy(menangSuit); break;
-    case 2: Medium(menangSuit); break;
-    case 3: Hard(menangSuit); break;
+        case 1: Easy(menangSuit); break;
+        case 2: Medium(menangSuit); break;
+        case 3: Hard(menangSuit); break;
     }
 
 }
@@ -192,6 +211,8 @@ void Easy(int menangSuit) {
     while (mulai) {
         PlayTheGame(menangSuit);
     }
+
+    GameOver();
 
 }
 
@@ -221,7 +242,7 @@ void persiapanMatrix() {
 void DisplayBoard(){
     int i, j;
 
-    printf("%s\t vs \t%s\n", nama, nama_2);
+    printf("\n%s\t vs \t%s\n\n", data.nama, data.nama_2);
 
     for (i = 0; i < ukuran; i++) {
         for (j = 0; j < ukuran; j++) {
@@ -262,7 +283,7 @@ void PlayTheGame(int menangSuit) {
             printf("kotak penuh, giliran diganti !\n");
         }
 
-        GameOver();
+        //GameOver();
 
         if(mulai){
             //system("cls");
@@ -285,7 +306,7 @@ void PlayTheGame(int menangSuit) {
             } else {
                 printf("kotak penuh, giliran diganti !\n");
             }
-            GameOver();
+            //GameOver();
         }
 
     }
@@ -310,7 +331,7 @@ void PlayTheGame(int menangSuit) {
             printf("kotak penuh, giliran diganti !\n");
         }
 
-        GameOver();
+        //GameOver();
 
         if(mulai){
             p_1_InputX(&bar, &col, &waktuInput);
@@ -332,7 +353,7 @@ void PlayTheGame(int menangSuit) {
             } else {
                 printf("kotak penuh, giliran diganti !\n");
             }
-            GameOver();
+            //GameOver();
         }
 
     }
@@ -356,11 +377,11 @@ void PlayTheGame(int menangSuit) {
         } else {
             printf("kotak penuh, giliran diganti !\n");
         }
-        GameOver();
+        //GameOver();
 
         if(mulai){
             p_com_InputO();
-            GameOver();
+           // GameOver();
         }
     }
     else {
@@ -387,7 +408,7 @@ void PlayTheGame(int menangSuit) {
             } else {
                 printf("kotak penuh, giliran diganti !\n");
             }
-            GameOver();
+            //GameOver();
         }
     }
 
@@ -415,7 +436,9 @@ void p_1_InputX(int* x, int* y, double *waktuInput) {
     //StartTime
     t = StartTime();
     printf("(X) input baris kolom : ");
-    scanf("%d %d", &baris, &kolom);
+    while(scanf("%d %d", &baris, &kolom)!= 2 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
     t = EndTime() - t;
 
     *x = baris;
@@ -432,7 +455,9 @@ void p_2_InputO(int* x, int* y, double *waktuInput) {
     //StartTime
     t = StartTime();
     printf("(O) input baris kolom : ");
-    scanf("%d %d", &baris, &kolom);
+    while(scanf("%d %d", &baris, &kolom)!= 2 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
     t = EndTime() - t;
 
     *x = baris;
@@ -654,7 +679,13 @@ bool CekPenuh(){
     }
 }
 
-void GameOver() {}
+void GameOver() {
+
+        printf("\n! GAME OVER !\n");
+        system("pause");
+        exit(0);
+
+}
 
 void Medium(int menangSuit) {
 
@@ -668,6 +699,8 @@ void Medium(int menangSuit) {
         PlayTheGame(menangSuit);
     }
 
+    GameOver();
+
 }
 
 void Hard(int menangSuit) {
@@ -679,17 +712,53 @@ void Hard(int menangSuit) {
     DisplayBoard();
 
     while (mulai) {
-        StartTime();
         PlayTheGame(menangSuit);
+    }
+
+    GameOver();
+
+}
+
+void PlayerVsComputer() {
+    int menangSuit;
+
+    InpuNama();
+    menangSuit = suit();
+    switch (level) {
+    case 1: Easy(menangSuit); break;
+    case 2: Medium(menangSuit); break;
+    case 3: Hard(menangSuit); break;
     }
 
 }
 
-void PlayerVsComputer() {}
-
 char p_com_InputO() {}
 
-void HighScores() {}
+void HighScores() {
+    int countNum, stat, score;
+
+    FILE *outfile, *temp;
+
+    //open file for writing
+    outfile = fopen("HighScore.dat", "ab+");
+
+    //check file jika error
+    if (outfile == NULL){
+        fprintf(stderr, "\nError Open File\n");
+        exit(1);
+    }
+
+    fwrite(&data, sizeof(struct dataPlayer), 1, outfile);
+
+    if(fwrite != 0){
+        printf("Data berhasil di simpan :)");
+    } else {
+        printf("error BOY !!!");
+    }
+
+
+
+}
 
 void Help() {
 printf("\t\t\t\t\t\tHELP\n");
