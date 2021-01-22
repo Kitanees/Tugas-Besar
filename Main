@@ -2,6 +2,8 @@
 #include<stdbool.h>
 #include<string.h>
 #include<time.h>
+#include<stdlib.h>
+#include<math.h>
 //Authors : Arsal Fadilah && Nauval Ozora
 
 /*kumpulan modul*/
@@ -198,7 +200,71 @@ void PlayerVsPlayer() {
 
 }
 
-int suit() {}
+int suit() {
+		//Deklarasi
+		int kom, P,s,i;
+		//Deskripsi: merandom nomor suwit computer
+		//Input: -
+		//Output: integer hasil random suwit
+		
+		printf("Sebelum Bermain, Tentukan siapa yang akan Bermain Terlebih Dahulu....\n");
+		printf("Tunggu Sebentar. Jangan Kemana - mana!!!");
+		for(i=0;i<999999999;i++){
+		}
+		system("cls");
+		do{
+			system("cls");
+			srand(time(0));//1.Batu 2.Gunting 3.Kertas
+			P =rand()%3+1;
+			kom=rand()%3+1;
+				if(kom==1){
+					printf("KOMPUTER MENDAPATKAN BATU\n");
+					if(P==1){
+						printf("PLAYER MENDAPATKAN BATU\n");
+						printf("HASIL SERI!!! ULANGI LAGI!");
+					}
+					else if(P==2){
+						printf("Player mendapatkan Gunting\n");
+						printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+					}
+					else if(P==3){
+						printf("PLAYER MENDAPATKAN KERTAS\n");
+						printf("PLAYER BERMAIN TERLEBIH DAHULU");
+					}
+				}
+				else if(kom==2){
+					printf("KOMPUTER MENDAPATKAN GUNTING\n");
+					if(P==1){
+						printf("PLAYER MENDAPATKAN BATU\n");
+						printf("PLAYER BERMAIN TERLEBIH DAHULU");
+					}
+					else if(P==2){
+						printf("PLAYER MENDAPATKAN GUNTING\n");
+						printf("HASIL SERI!!! ULANGI LAGI!");
+					}
+					else if(P==3){
+						printf("PLAYER MENDAPATKAN KERTAS\n");
+						printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+					}
+				}
+				else if(kom==3){
+					printf("KOMPUTER MENDAPATKAN KERTAS\n");
+					if(P==1){
+						printf("PLAYER MENDAPATKAN BATU\n");
+						printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+					}
+					else if(P==2){
+						printf("PLAYER MENDAPATKAN GUNTING\n");
+						printf("PLAYER BERMAIN TERLEBIH DAHULU");
+					}
+					else if(P==3){
+						printf("PLAYER MENDAPATKAN KERTAS\n");
+						printf("HASIL SERI!!! ULANGI LAGI!");
+					}
+				}
+		}while(P==kom);
+		return 0;
+	}
 
 void Easy(int menangSuit) {
 
@@ -813,3 +879,5 @@ int a;
 }
 
 void exitGame() {}
+
+	
