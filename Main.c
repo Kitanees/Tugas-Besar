@@ -974,11 +974,12 @@ char p_com_InputO() {}
 void HighScores() {
 
     char c;
+    int n=0, i=0, j=0;
 
     struct formatHS{
         char namaPemenang[20];
         int skor;
-    }tulis;
+    }sortScore[100], tulis;
 
     /*open file for writing appending*/
     if(ukuran!=0){
@@ -1001,16 +1002,51 @@ void HighScores() {
         //check if file not succed write
         if(fwrite != 0){
             printf("High Score Berhasil disimpan\n");
+            system("pause");
         } else {
             printf("sorry ada masalah :(\n");
         }
 
         fclose(outfile);
+
+        /*open file for sorting descending*/
+        FILE *sortFile;
+        sortFile = fopen("HighScores.dat", "rb");
+
+        //input array of struct from file
+        while(fread(&sortScore[i], sizeof(struct formatHS), 1, sortFile)){
+            printf("loading . . .\n");
+            system("cls");
+            i++;
+            n++;
+        }
+
+        system("pause");
+
+        fclose(sortFile);
+
+        //sort struxt data
+        for (i = 0; i < n; i++){
+            for (j = i; j < n; j++) {
+                if (sortScore[i].skor < sortScore[j].skor) {
+                    tulis = sortScore[j];
+                    sortScore[j] = sortScore[i];
+                    sortScore[i] = tulis;
+                }
+            }
+        }
+
+        //back input from struct data to file
+        sortFile = fopen("HighScores.dat", "wb");
+        for(i=0; i<n; i++){
+            fwrite(&sortScore[i], sizeof(struct formatHS), 1, sortFile);
+        }
+
+        fclose(sortFile);
+
     }
 
-
     /*open file for read and display*/
-
     printf("Anda mau melihat High Score ? (y/t) : ");
     //input \n yg terbawa sebelumnya
     scanf("%c", &c);
@@ -1026,8 +1062,10 @@ void HighScores() {
             exit(0);
         }
         printf("Nama\t\t\tSkor\n");
-        while(fread(&tulis, sizeof(struct formatHS), 1, infile)){
+        i = 0;
+        while(fread(&tulis, sizeof(struct formatHS), 1, infile) && i!=10){
             printf("%s\t\t\t%d\n", tulis.namaPemenang, tulis.skor);
+            i++;
         }
 
         fclose(infile);
