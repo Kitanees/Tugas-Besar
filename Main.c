@@ -2,10 +2,11 @@
 #include<stdbool.h>
 #include<string.h>
 #include<time.h>
+#include<stdlib.h>
 //Authors : Arsal Fadilah && Nauval Ozora
 
 /*kumpulan modul*/
-void LoadGame();
+void LoadDisplay();
 void DisplayMenu();
 int InputMenu();
 void StartGame();
@@ -14,10 +15,10 @@ int ChooseLevel();
 void InpuNama();
 void PlayerVsPlayer();
 int suit();
-void Easy(int menangSuit);
+void Easy();
 void DisplayBoard();
 void persiapanMatrix();
-void PlayTheGame(int menangSuit, int bonus);
+void PlayTheGame();
 int StartTime();
 int EndTime();
 void p_1_InputX(int* x, int* y, double *waktuInput);
@@ -28,38 +29,50 @@ bool CekCol();
 bool CekDiagon();
 bool CekPenuh();
 void GameOver();
-void Medium(int menangSuit);
-void Hard(int menangSuit);
+void Medium();
+void Hard();
 void PlayerVsComputer();
 char p_com_InputO();
 void HighScores();
 void Help();
 void AboutAuthor();
+void loadGame();
+void savedGame();
 void exitGame();
 
 //variabel global
-int enemy, level, ukuran;
+int ukuran, bonus;
 double waktu;
 struct dataPlayer {
+    int posisi;
+    int enemy;
+    int level;
+    int menangSuit;
     int score_1;
     int score_2;
     char nama[20];
     char nama_2[20];
+    char matrix_2D[10][10];
+    bool mulai;
 } data;
-char matrix_2D[10][10];
-bool mulai = true;
 
 int main() {
 
-    LoadGame();
+    if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
+        LoadDisplay();
+    }
+
+    data.mulai = true;
+
 menu:
     DisplayMenu();
     switch (InputMenu()) {
     case 1: StartGame(); break;
-    case 2: HighScores(); break;
-    case 3: Help(); break;
-    case 4: AboutAuthor(); break;
-    case 5: exitGame(); break;
+    case 2: loadGame(); break;
+    case 3: HighScores(); break;
+    case 4: Help(); break;
+    case 5: AboutAuthor(); break;
+    case 6: exitGame(); break;
     default:
         printf("WRONG INPUT NUMBER.\n");
         printf("Pilih nomer aja salah, apalagi pilih pasangan hidup -.-\n\n");
@@ -71,7 +84,7 @@ menu:
     return 0;
 }
 
-void LoadGame() {
+void LoadDisplay() {
     int i;
 
     for(i=0; i<=100; i++){
@@ -87,10 +100,11 @@ void DisplayMenu() {
     printf("\t\t\tMenu\n");
     printf("=====================================================\n");
     printf("1. Play Game\n");
-    printf("2. High Score\n");
-    printf("3. Help\n");
-    printf("4. About Author\n");
-    printf("5. Exit\n\n");
+    printf("2. Load Game\n");
+    printf("3. High Score\n");
+    printf("4. Help\n");
+    printf("5. About Author\n");
+    printf("6. Exit\n\n");
     printf("please input number of menu, your choose : ");
 
 }
@@ -109,10 +123,11 @@ int InputMenu() {
 
 void StartGame() {
 
-    enemy = ChooseEnemy();
-    level = ChooseLevel();
+    data.enemy = ChooseEnemy();
+    data.level = ChooseLevel();
+    data.posisi = 0;
 
-    switch (enemy) {
+    switch (data.enemy) {
         case 1: PlayerVsPlayer(); break;
         case 2: PlayerVsComputer(); break;
     }
@@ -168,12 +183,12 @@ int ChooseLevel() {
 
 void InpuNama() {
 
-    if(enemy==1){
-        printf("nama player 1 : ");
+    if(data.enemy==1){
+        printf("nama player 1 (X) : ");
         fgets(data.nama, sizeof(data.nama), stdin);
         data.nama[strlen(data.nama) - 1] = '\0';
         scanf("%[^\n]s", data.nama);
-        printf("nama player 2 : ");
+        printf("nama player 2 (O) : ");
         fgets(data.nama_2, sizeof(data.nama_2), stdin);
         data.nama_2[strlen(data.nama_2) - 1] = '\0';
         scanf("%[^\n]s", data.nama_2);
@@ -191,86 +206,85 @@ void InpuNama() {
 }
 
 void PlayerVsPlayer() {
-    int menangSuit;
 
     InpuNama();
-    menangSuit = suit();
-    switch (level) {
-        case 1: Easy(menangSuit); break;
-        case 2: Medium(menangSuit); break;
-        case 3: Hard(menangSuit); break;
+    data.menangSuit = suit();
+    switch (data.level) {
+        case 1: Easy(); break;
+        case 2: Medium(); break;
+        case 3: Hard(); break;
     }
 
 }
 
 int suit() {
-    		system("cls");
+
 		//Deklarasi
 		int kom, P,s,i,menang;
 		//Deskripsi: merandom nomor suwit computer
 		//Input: -
 		//Output: integer hasil random suwit
-
+        system("cls");
 		printf("Sebelum Bermain, Tentukan siapa yang akan Bermain Terlebih Dahulu....\n");
-		printf("Tunggu Sebentar. Jangan Kemana - mana!!!");
+		printf("Tunggu Sebentar. Jangan Kemana - mana!!! ");
 		for(i=0;i<999999999;i++){
 		}
 		system("cls");
 		do{
 			system("cls");
 			srand(time(0));//1.Batu 2.Gunting 3.Kertas
-			switch(enemy){
+			switch(data.enemy){
 				case 1 :
 					P =rand()%3+1;
 					kom=rand()%3+1;
 						if(kom==1){
-							printf("PLAYER 2 MENDAPATKAN BATU\n");
+							printf("PLAYER %s MENDAPATKAN BATU\n", data.nama_2);
 							if(P==1){
-								printf("PLAYER 1 MENDAPATKAN BATU\n");
+								printf("PLAYER %s MENDAPATKAN BATU\n", data.nama);
 								printf("HASIL SERI!!! ULANGI LAGI!");
 							}
 							else if(P==2){
-								printf("PLAYER 1 MENDAPATKAN GUNTING\n");
-								printf("PLAYER 2 BERMAIN TERLEBIH DAHULU");
+								printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama);
+								printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=2;
 							}
 							else if(P==3){
-								printf("PLAYER 1 MENDAPATKAN KERTAS\n");
-								printf("PLAYER 1 BERMAIN TERLEBIH DAHULU");
+								printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama);
+								printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama);
 								menang=1;
 							}
 						}
 						else if(kom==2){
-							printf("PLAYER 2 MENDAPATKAN GUNTING\n");
+							printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama_2);
 							if(P==1){
-								printf("PLAYER 1 MENDAPATKAN BATU\n");
-								printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								printf("PLAYER %s MENDAPATKAN BATU\n", data.nama);
+								printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama);
 								menang=1;
 							}
 							else if(P==2){
-								printf("PLAYER 1 MENDAPATKAN GUNTING\n");
+								printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama);
 								printf("HASIL SERI!!! ULANGI LAGI!");
 							}
 							else if(P==3){
-								printf("PLAYER 1 MENDAPATKAN KERTAS\n");
-								printf("PLAYER 2 BERMAIN TERLEBIH DAHULU");
+								printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama);
+								printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=2;
 							}
 						}
 						else if(kom==3){
-							printf("PLAYER 2 MENDAPATKAN KERTAS\n");
+							printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama_2);
 							if(P==1){
-								printf("PLAYER 1 MENDAPATKAN BATU\n");
-								printf("PLAYER 2 BERMAIN TERLEBIH DAHULU");
+								printf("PLAYER %s MENDAPATKAN BATU\n", data.nama);
+								printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=2;
 							}
 							else if(P==2){
-								printf("PLAYER 1 MENDAPATKAN GUNTING\n");
-								printf("PLAYER 1 BERMAIN TERLEBIH DAHULU");
+								printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama);
+								printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama);
 								menang=1;
 							}
 							else if(P==3){
-								printf("PLAYER 1 MENDAPATKAN KERTAS\n");
+								printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama);
 								printf("HASIL SERI!!! ULANGI LAGI!");
 							}
 						}
@@ -339,17 +353,20 @@ int suit() {
 					return menang;
 }
 
-void Easy(int menangSuit) {
+void Easy() {
 
-    int bonus = 300;
+    bonus = 300;
     ukuran = 4;
     waktu = 10;
 
-    persiapanMatrix();
+    if(data.posisi!=1 && data.posisi!=2){
+        persiapanMatrix();
+    }
+
     DisplayBoard();
 
-    while (mulai) {
-        PlayTheGame(menangSuit, bonus);
+    while (data.mulai) {
+        PlayTheGame();
     }
 
     system("cls");
@@ -368,15 +385,15 @@ void persiapanMatrix() {
         angkaBar = '0';
         for (j = 0; j < ukuran; j++) {
             if (i == 0) {
-                matrix_2D[i][j] = angkaBar;
+                data.matrix_2D[i][j] = angkaBar;
                 angkaBar = angkaBar + 1;
             }
             else if (j == 0) {
-                matrix_2D[i][j] = angkaCol;
+                data.matrix_2D[i][j] = angkaCol;
                 angkaCol = angkaCol + 1;
             }
             else {
-                matrix_2D[i][j] = '\0';
+                data.matrix_2D[i][j] = '\0';
             }
         }
     }
@@ -390,10 +407,10 @@ void DisplayBoard(){
 
     for (i = 0; i < ukuran; i++) {
         for (j = 0; j < ukuran; j++) {
-            if(matrix_2D[i][j]=='\0'){
+            if(data.matrix_2D[i][j]=='\0'){
                 printf("  ");
             }else{
-                printf("%c ", matrix_2D[i][j]);
+                printf("%c ", data.matrix_2D[i][j]);
             }
         }
         printf("\n");
@@ -401,195 +418,218 @@ void DisplayBoard(){
 
 }
 
-void PlayTheGame(int menangSuit, int bonus) {
+void PlayTheGame() {
     int bar = 0, col = 0;
     double waktuInput = 0;
 
-    if (enemy == 1 && menangSuit == 1) {
-        //Inputan ;
-        p_1_InputX(&bar, &col, &waktuInput);
-        if (CekSel(bar, col) && waktuInput<=waktu) {
-            system("cls");
-            matrix_2D[bar][col] = 'X';
-            DisplayBoard();
-            if(CekBar()){
-                mulai = false;
-            } else if(CekCol()){
-                mulai = false;
-            } else if(CekDiagon()){
-                mulai = false;
-            } else if(CekPenuh()){
-                mulai = false;
-            }
-            //Hitung Highscores
-            if(!mulai){
-                data.score_1++;
-                data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
-            }
 
-        } else if(waktuInput>waktu){
-            printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
-        } else {
-            printf("kotak penuh, giliran diganti !\n");
+    if (data.enemy == 1 && data.menangSuit == 1) {
+        //Inputan ;
+        if(data.posisi==1 || data.posisi==0){
+            data.posisi = 1;
+            p_1_InputX(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    data.mulai = false;
+                }
+                //Hitung Highscores
+                if(!data.mulai){
+                    data.score_1++;
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
+                }
+            } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else if (bar == 0 && col ==0){
+                savedGame();
+            } else {
+                printf("kotak penuh, giliran diganti !\n");
+            }
+            GameOver();
         }
 
-        GameOver();
-
-        if(mulai){
-            //system("cls");
+        if(data.mulai){
+            data.posisi = 2;
             p_2_InputO(&bar, &col, &waktuInput);
             if (CekSel(bar, col) && waktuInput<=waktu) {
                 system("cls");
-                matrix_2D[bar][col] = 'O';
+                data.matrix_2D[bar][col] = 'O';
                 DisplayBoard();
                 if(CekBar()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekCol()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekDiagon()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekPenuh()){
-                    mulai = false;
+                    data.mulai = false;
                 }
 
-                if(!mulai){
+                if(!data.mulai){
                     data.score_2++;
                     data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
                 }
 
             } else if(waktuInput>waktu){
                 printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else if(bar == 0 && col ==0){
+                savedGame();
+            } else {
+                printf("kotak penuh, giliran diganti !\n");
+            }
+            GameOver();
+        }
+        data.posisi=data.posisi-1;
+    }
+    else if (data.enemy == 1 && data.menangSuit == 2) {
+        if(data.posisi==1 || data.posisi==0){
+           data.posisi = 1;
+            p_2_InputO(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    data.mulai = false;
+                }
+                if(!data.mulai){
+                    data.score_2++;
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                    printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else if(bar == 0 && col ==0){
+                savedGame();
             } else {
                 printf("kotak penuh, giliran diganti !\n");
             }
             GameOver();
         }
 
-    }
-    else if (enemy == 1 && menangSuit == 2) {
-        p_2_InputO(&bar, &col, &waktuInput);
-        if (CekSel(bar, col) && waktuInput<=waktu) {
-            system("cls");
-            matrix_2D[bar][col] = 'O';
-            DisplayBoard();
-            if(CekBar()){
-                mulai = false;
-            } else if(CekCol()){
-                mulai = false;
-            } else if(CekDiagon()){
-                mulai = false;
-            } else if(CekPenuh()){
-                mulai = false;
-            }
-
-            if(!mulai){
-                data.score_2++;
-                data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
-            }
-
-        } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
-        } else {
-            printf("kotak penuh, giliran diganti !\n");
-        }
-
-        GameOver();
-
-        if(mulai){
+        if(data.mulai){
+            data.posisi = 2;
             p_1_InputX(&bar, &col, &waktuInput);
             if (CekSel(bar, col) && waktuInput<=waktu) {
                 system("cls");
-                matrix_2D[bar][col] = 'X';
+                data.matrix_2D[bar][col] = 'X';
                 DisplayBoard();
                 if(CekBar()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekCol()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekDiagon()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekPenuh()){
-                    mulai = false;
+                    data.mulai = false;
                 }
 
-                if(!mulai){
+                if(!data.mulai){
                     data.score_1++;
                     data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
 
             } else if(waktuInput>waktu){
                 printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else if(bar == 0 && col ==0){
+                savedGame();
+            } else {
+                printf("kotak penuh, giliran diganti !\n");
+            }
+            GameOver();
+        }
+        data.posisi=data.posisi-1;
+    }
+    else if (data.enemy == 2 && data.menangSuit == 1) {
+        if(data.posisi==1 || data.posisi==0){
+            data.posisi = 1;
+            p_1_InputX(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    data.mulai = false;
+                }
+
+                if(!data.mulai){
+                    data.score_1++;
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else if(bar == 0 && col ==0){
+                    savedGame();
             } else {
                 printf("kotak penuh, giliran diganti !\n");
             }
             GameOver();
         }
 
-    }
-    else if (enemy == 2 && menangSuit == 1) {
-        p_1_InputX(&bar, &col, &waktuInput);
-        if (CekSel(bar, col) && waktuInput<=waktu) {
-            system("cls");
-            matrix_2D[bar][col] = 'X';
-            DisplayBoard();
-            if(CekBar()){
-                mulai = false;
-            } else if(CekCol()){
-                mulai = false;
-            } else if(CekDiagon()){
-                mulai = false;
-            } else if(CekPenuh()){
-                mulai = false;
-            }
-
-            if(!mulai){
-                data.score_1++;
-                data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
-            }
-
-        } else if(waktuInput>waktu){
-            printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
-        } else {
-            printf("kotak penuh, giliran diganti !\n");
-        }
-        GameOver();
-
-        if(mulai){
+        if(data.mulai){
+            data.posisi=2;
             p_com_InputO();
             GameOver();
         }
+        data.posisi=data.posisi-1;
     }
     else {
         p_com_InputO();
         GameOver();
 
-        if(mulai){
+        if(data.mulai){
             p_1_InputX(&bar, &col, &waktuInput);
+            data.posisi = 2;
             if (CekSel(bar, col) && waktuInput<=waktu) {
                 system("cls");
-                matrix_2D[bar][col] = 'X';
+                data.matrix_2D[bar][col] = 'X';
                 DisplayBoard();
                 if(CekBar()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekCol()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekDiagon()){
-                    mulai = false;
+                    data.mulai = false;
                 } else if(CekPenuh()){
-                    mulai = false;
+                    data.mulai = false;
                 }
 
-                if(!mulai){
+                if(!data.mulai){
                     data.score_1++;
                     data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
 
             } else if(waktuInput>waktu){
                 printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else if(bar == 0 && col ==0){
+                savedGame();
             } else {
                 printf("kotak penuh, giliran diganti !\n");
             }
             GameOver();
         }
+        data.posisi=data.posisi-1;
     }
 
 }
@@ -647,7 +687,7 @@ void p_2_InputO(int* x, int* y, double *waktuInput) {
 
 bool CekSel(int x, int y) {
 
-    if (matrix_2D[x][y] == '\0') {
+    if (data.matrix_2D[x][y] == '\0') {
         return true;
     }
     else {
@@ -665,12 +705,12 @@ bool CekBar() {
         for(j=1; j<ukuran-2; j++){
             count = 0;
             for(k=j; k<j+3; k++){
-                 if(matrix_2D[i][k]=='X'){
+                 if(data.matrix_2D[i][k]=='X'){
                     count++;
                 }
                 if(count==3){
                     for(k; k>=j; k--){
-                        matrix_2D[i][k]='\\';
+                        data.matrix_2D[i][k]='\\';
                     }
                     return true;
                 }
@@ -684,12 +724,12 @@ bool CekBar() {
         for(j=1; j<ukuran-2; j++){
             count = 0;
             for(k=j; k<j+3; k++){
-                if(matrix_2D[i][k]=='O'){
+                if(data.matrix_2D[i][k]=='O'){
                     count++;
                 }
                 if(count==3){
                     for(k; k>=j; k--){
-                        matrix_2D[i][k]='/';
+                        data.matrix_2D[i][k]='/';
                     }
                     return true;
                 }
@@ -711,12 +751,12 @@ bool CekCol() {
         for(j=1; j<ukuran-2; j++){
             count = 0;
             for(k=j; k<j+3; k++){
-               if(matrix_2D[k][i]=='X'){
+               if(data.matrix_2D[k][i]=='X'){
                     count++;
                 }
                 if(count==3){
                     for(k; k>=j; k--){
-                        matrix_2D[k][i]='\\';
+                        data.matrix_2D[k][i]='\\';
                     }
                     return true;
                 }
@@ -730,12 +770,12 @@ bool CekCol() {
         for(j=1; j<ukuran-2; j++){
             count = 0;
             for(k=j; k<j+3; k++){
-               if(matrix_2D[k][i]=='O'){
+               if(data.matrix_2D[k][i]=='O'){
                     count++;
                 }
                 if(count==3){
                     for(k; k>=j; k--){
-                        matrix_2D[k][i]='/';
+                        data.matrix_2D[k][i]='/';
                     }
                     return true;
                 }
@@ -759,7 +799,7 @@ bool CekDiagon() {
             for(i=l; i<l+3; i++){
                 for(j=k; j<k+3; j++){
                     if(i+tambahBar==j+tambahKol){
-                        if(matrix_2D[i][j]=='X'){
+                        if(data.matrix_2D[i][j]=='X'){
                             count++;
                         }
                     }
@@ -767,7 +807,7 @@ bool CekDiagon() {
                         for(i; i>=l; i--){
                             for(j=k+2; j>=k; j--){
                                 if(i+tambahBar==j+tambahKol){
-                                    matrix_2D[i][j]='\\';
+                                    data.matrix_2D[i][j]='\\';
                                 }
                             }
                         }
@@ -791,7 +831,7 @@ bool CekDiagon() {
             for(i=l; i<l+3; i++){
                 for(j=k+2; j>=k; j--){
                     if(i+j==k+3+tambahKol){
-                        if(matrix_2D[j][i]=='X'){
+                        if(data.matrix_2D[j][i]=='X'){
                             count++;
                         }
                     }
@@ -799,7 +839,7 @@ bool CekDiagon() {
                         for(i; i>=l; i--){
                             for(j=k; j<=k+2; j++){
                                 if(i+j==k+3+tambahKol){
-                                    matrix_2D[j][i]='\\';
+                                    data.matrix_2D[j][i]='\\';
                                 }
                             }
                         }
@@ -823,7 +863,7 @@ bool CekDiagon() {
             for(i=l; i<l+3; i++){
                 for(j=k; j<k+3; j++){
                     if(i+tambahBar==j+tambahKol){
-                        if(matrix_2D[i][j]=='O'){
+                        if(data.matrix_2D[i][j]=='O'){
                             count++;
                         }
                     }
@@ -831,7 +871,7 @@ bool CekDiagon() {
                         for(i; i>=l; i--){
                             for(j=k+2; j>=k; j--){
                                 if(i+tambahBar==j+tambahKol){
-                                    matrix_2D[i][j]='/';
+                                    data.matrix_2D[i][j]='/';
                                 }
                             }
                         }
@@ -855,7 +895,7 @@ bool CekDiagon() {
             for(i=l; i<l+3; i++){
                 for(j=k+3-1; j>=k; j--){
                     if(i+j==k+3+tambahKol){
-                        if(matrix_2D[j][i]=='O'){
+                        if(data.matrix_2D[j][i]=='O'){
                             count++;
                         }
                     }
@@ -863,7 +903,7 @@ bool CekDiagon() {
                         for(i; i>=l; i--){
                             for(j=k+2; j>=k; j--){
                                 if(i+tambahBar==j+tambahKol){
-                                    matrix_2D[i][j]='/';
+                                    data.matrix_2D[i][j]='/';
                                 }
                             }
                         }
@@ -889,7 +929,7 @@ bool CekPenuh(){
 
     for(i=1; i<ukuran; i++){
         for(j=1; j<ukuran; j++){
-            if(matrix_2D[i][j]!='\0'){
+            if(data.matrix_2D[i][j]!='\0'){
                 count++;
             }
         }
@@ -909,24 +949,27 @@ void GameOver() {
             if(CekPenuh()){
                 printf("\nGAME OVER\n");
             }
-            else if(!mulai){
-                mulai=true;
+            else if(!data.mulai){
+                data.mulai=true;
             }
         }
 
 }
 
-void Medium(int menangSuit) {
+void Medium() {
 
-    int bonus = 120;
+    bonus = 120;
     ukuran = 6;
     waktu = 7;
 
-    persiapanMatrix();
+    if(data.posisi!=1 || data.posisi!=2){
+        persiapanMatrix();
+    }
+
     DisplayBoard();
 
-    while (mulai) {
-        PlayTheGame(menangSuit, bonus);
+    while (data.mulai) {
+        PlayTheGame();
     }
 
     system("cls");
@@ -937,17 +980,20 @@ void Medium(int menangSuit) {
 
 }
 
-void Hard(int menangSuit) {
+void Hard() {
 
-    int bonus = 150;
+    bonus = 150;
     ukuran = 8;
     waktu = 5;
 
-    persiapanMatrix();
+    if(data.posisi!=1 || data.posisi!=2){
+        persiapanMatrix();
+    }
+
     DisplayBoard();
 
-    while (mulai) {
-        PlayTheGame(menangSuit, bonus);
+    while (data.mulai) {
+        PlayTheGame();
     }
 
     system("cls");
@@ -960,11 +1006,11 @@ void PlayerVsComputer() {
     int menangSuit;
 
     InpuNama();
-    menangSuit = suit();
-    switch (level) {
-    case 1: Easy(menangSuit); break;
-    case 2: Medium(menangSuit); break;
-    case 3: Hard(menangSuit); break;
+    data.menangSuit = suit();
+    switch (data.level) {
+    case 1: Easy(); break;
+    case 2: Medium(); break;
+    case 3: Hard(); break;
     }
 
 }
@@ -995,6 +1041,8 @@ void HighScores() {
             strcpy(tulis.namaPemenang, data.nama_2);
             tulis.skor = data.score_2;
         }
+
+        printf("\n%s, Selamat Bang Jagoo !!!\n", tulis.namaPemenang);
 
         //writing file
         fwrite(&tulis, sizeof(struct formatHS), 1, outfile);
@@ -1043,7 +1091,6 @@ void HighScores() {
         }
 
         fclose(sortFile);
-
     }
 
     /*open file for read and display*/
@@ -1071,6 +1118,12 @@ void HighScores() {
         fclose(infile);
     }
 
+    data.mulai = false;
+    printf("\nBack To Menu\n");
+    system("pause");
+    system("cls");
+    main();
+
 }
 
 void Help() {
@@ -1082,6 +1135,13 @@ printf("\t\t\t\t\t\tHELP\n");
 		printf("4. Langkah 1 - 3 akan diulangi terus sampai ada salah satu player yang berhasil\n");
 		printf("   mengurutkan X/O sebanyak tiga kali secara berurutan atau bidang permainan sudah penuh\n");
 		printf("5. Jika permainan sudah selesai, maka game akan meminta inputan untuk melanjutkan permainan atau tidak.\n");
+
+    data.mulai = false;
+    printf("\nBack To Menu\n");
+    system("pause");
+    system("cls");
+    main();
+
 }
 
 void AboutAuthor() {
@@ -1123,6 +1183,80 @@ int a;
 				printf("Motto Hidup \t\t: gak ada yang gak bisa\n");
 			}
 		}
+
+    data.mulai = false;
+    printf("\nBack To Menu\n");
+    system("pause");
+    system("cls");
+    main();
+
 }
 
-void exitGame() {}
+void loadGame(){
+
+    FILE *loadFile;
+
+    loadFile = fopen("saveFile.dat", "rb");
+
+    while(fread(&data, sizeof(struct dataPlayer), 1, loadFile)){
+        printf("loading . . .");
+        system("cls");
+    }
+
+    //printf("%d", data.mulai);
+    //system("pause");
+
+    fclose(loadFile);
+
+    switch (data.level) {
+        case 1: Easy(); break;
+        case 2: Medium(); break;
+        case 3: Hard(); break;
+    }
+
+}
+
+void savedGame(){
+
+    char c;
+
+    printf("Jika anda menyimpan game kali ini, data yang dulu tersimpan akan tegantikan.\n");
+    printf("Yakin mau menyimpannya (y/t) ? ");
+    //input tambahan untuk \n
+    scanf("%c", &c);
+    scanf("%c", &c);
+
+    if(c == 'y'){
+        FILE *savedFile;
+
+        savedFile = fopen("saveFile.dat", "wb");
+
+        fwrite(&data, sizeof(struct dataPlayer), 1, savedFile);
+
+        if(fwrite != 0){
+            printf("Game berhasil disimpan !!!");
+            printf("Mau lanjut ? (y/t) : ");
+            //input tambahan \n
+            scanf("%c", &c);
+            scanf("%c", &c);
+            if(c == 'y'){
+                PlayTheGame();
+            } else {
+                exitGame();
+            }
+        } else {
+            printf("Ops, ada yang salah :(");
+        }
+
+        fclose(savedFile);
+
+    } else {
+        printf("Oke lanjut gan ...");
+        PlayTheGame();
+    }
+
+}
+
+void exitGame() {
+    exit(0);
+}
