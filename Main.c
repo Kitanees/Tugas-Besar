@@ -3,6 +3,8 @@
 #include<string.h>
 #include<time.h>
 #include<stdlib.h>
+#include<windows.h>
+#include<mmsystem.h>
 //Authors : Arsal Fadilah && Nauval Ozora
 
 /*kumpulan modul*/
@@ -25,20 +27,32 @@ void p_1_InputX(int* x, int* y, double *waktuInput);
 void p_2_InputO(int* x, int* y, double *waktuInput);
 bool CekSel(int x, int y);
 bool CekBar();
+bool CekBarCom();
+void inputInBarCom(int *x, int *y);
 bool CekCol();
+bool CekColCom();
+void inputInColCom(int *x, int *y);
 bool CekDiagon();
+bool CekDiagonRLCom();
+bool CekDiagonLRCom();
+void inputInDiagonCom(int *x, int *y);
+void inputRandCom(int *x, int *y);
 bool CekPenuh();
 void GameOver();
 void Medium();
 void Hard();
 void PlayerVsComputer();
-char p_com_InputO();
+void p_com_InputO(int *x, int *y, double *waktuInput);
 void HighScores();
 void Help();
 void AboutAuthor();
 void loadGame();
 void savedGame();
 void exitGame();
+
+/*modul interface*/
+void SetColor(int ForgC);
+
 
 //variabel global
 int ukuran, bonus;
@@ -58,10 +72,21 @@ struct dataPlayer {
 
 int main() {
 
+    //set background
+    system("color 0B");
+
+    //play backsound
+    PlaySound(TEXT("musik.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
     if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
         LoadDisplay();
     }
 
+    //inisialisasi var
+    ukuran = 0;
+    data.posisi = 0;
+    data.score_1 = 0;
+    data.score_2 = 0;
     data.mulai = true;
 
 menu:
@@ -96,6 +121,8 @@ void LoadDisplay() {
 }
 
 void DisplayMenu() {
+
+    system("cls");
 
     printf("\t\t\tMenu\n");
     printf("=====================================================\n");
@@ -227,8 +254,7 @@ int suit() {
         system("cls");
 		printf("Sebelum Bermain, Tentukan siapa yang akan Bermain Terlebih Dahulu....\n");
 		printf("Tunggu Sebentar. Jangan Kemana - mana!!! ");
-		for(i=0;i<999999999;i++){
-		}
+        Sleep(5000);
 		system("cls");
 		do{
 			system("cls");
@@ -402,25 +428,44 @@ void persiapanMatrix() {
 void DisplayBoard(){
     int i, j;
 
+    system("color 0B");
     printf("\n%s\t\t vs \t\t%s\n", data.nama, data.nama_2);
     printf("score X : %d \t\t\tscore O : %d\n\n", data.score_1, data.score_2);
 
     for (i = 0; i < ukuran; i++) {
         for (j = 0; j < ukuran; j++) {
             if(data.matrix_2D[i][j]=='\0'){
-                printf("  ");
-            }else{
-                printf("%c ", data.matrix_2D[i][j]);
+                SetColor(9);
+                printf("|_ _");
+            } else if (data.matrix_2D[i][j]>=48 && data.matrix_2D[i][j] <= 57){
+                SetColor(10);
+                printf("  %c ", data.matrix_2D[i][j]);
+            } else if (data.matrix_2D[i][j] != '/' && data.matrix_2D[i][j] != '\\'){
+                SetColor(14);
+                printf("|_%c_", data.matrix_2D[i][j]);
+            } else if (data.matrix_2D[i][j]=='/'){
+                SetColor(4);
+                printf("|_%c_", data.matrix_2D[i][j]);
+            } else {
+                SetColor(5);
+                printf("|_%c_", data.matrix_2D[i][j]);
             }
         }
-        printf("\n");
+        if (data.matrix_2D[i][j-1]>=48 && data.matrix_2D[i][j-1] <= 57){
+            printf("\n\n");
+        } else {
+            printf("| \n\n");
+        }
     }
+
+    SetColor(14);
 
 }
 
 void PlayTheGame() {
     int bar = 0, col = 0;
     double waktuInput = 0;
+    bool penuh = true;
 
 
     if (data.enemy == 1 && data.menangSuit == 1) {
@@ -439,10 +484,11 @@ void PlayTheGame() {
                 } else if(CekDiagon()){
                     data.mulai = false;
                 } else if(CekPenuh()){
+                    penuh = false;
                     data.mulai = false;
                 }
                 //Hitung Highscores
-                if(!data.mulai){
+                if(!data.mulai && penuh){
                     data.score_1++;
                     data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
@@ -470,10 +516,11 @@ void PlayTheGame() {
                 } else if(CekDiagon()){
                     data.mulai = false;
                 } else if(CekPenuh()){
+                    penuh = false;
                     data.mulai = false;
                 }
 
-                if(!data.mulai){
+                if(!data.mulai && penuh){
                     data.score_2++;
                     data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
                 }
@@ -504,9 +551,10 @@ void PlayTheGame() {
                 } else if(CekDiagon()){
                     data.mulai = false;
                 } else if(CekPenuh()){
+                    penuh = false;
                     data.mulai = false;
                 }
-                if(!data.mulai){
+                if(!data.mulai && penuh){
                     data.score_2++;
                     data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
                 }
@@ -535,10 +583,11 @@ void PlayTheGame() {
                 } else if(CekDiagon()){
                     data.mulai = false;
                 } else if(CekPenuh()){
+                    penuh = false;
                     data.mulai = false;
                 }
 
-                if(!data.mulai){
+                if(!data.mulai && penuh){
                     data.score_1++;
                     data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
@@ -569,10 +618,11 @@ void PlayTheGame() {
                 } else if(CekDiagon()){
                     data.mulai = false;
                 } else if(CekPenuh()){
+                    penuh = false;
                     data.mulai = false;
                 }
 
-                if(!data.mulai){
+                if(!data.mulai && penuh){
                     data.score_1++;
                     data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
@@ -589,14 +639,74 @@ void PlayTheGame() {
 
         if(data.mulai){
             data.posisi=2;
-            p_com_InputO();
+            p_com_InputO(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_2++;
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            } else if(bar == 0 && col ==0){
+                    savedGame();
+            } else {
+                printf("kotak penuh, giliran diganti !\n");
+            }
             GameOver();
         }
         data.posisi=data.posisi-1;
     }
-    else {
-        p_com_InputO();
-        GameOver();
+    else if(data.enemy == 2 && data.menangSuit == 2) {
+        if(data.posisi==1 || data.posisi==0){
+            p_com_InputO(&bar, &col, &waktuInput);
+            data.posisi = 1;
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_2++;
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+            }
+            //else if(bar == 0 && col ==0){
+              //      savedGame();
+            //}
+            else {
+                printf("kotak penuh, giliran diganti !\n");
+            }
+
+            GameOver();
+        }
 
         if(data.mulai){
             p_1_InputX(&bar, &col, &waktuInput);
@@ -612,10 +722,11 @@ void PlayTheGame() {
                 } else if(CekDiagon()){
                     data.mulai = false;
                 } else if(CekPenuh()){
+                    penuh = false;
                     data.mulai = false;
                 }
 
-                if(!data.mulai){
+                if(!data.mulai && penuh){
                     data.score_1++;
                     data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
@@ -688,6 +799,7 @@ void p_2_InputO(int* x, int* y, double *waktuInput) {
 bool CekSel(int x, int y) {
 
     if (data.matrix_2D[x][y] == '\0') {
+        //printf("\nkosong\n");
         return true;
     }
     else {
@@ -742,6 +854,67 @@ bool CekBar() {
 
 }
 
+bool CekBarCom(){
+
+    int i, j, k, count=0;
+
+    for(i=1; i<ukuran; i++){
+        for(j=1; j<ukuran-2; j++){
+            count = 0;
+            for(k=j; k<j+3; k++){
+                 if(data.matrix_2D[i][k]=='X'){
+                    count++;
+                } else if (data.matrix_2D[i][k]=='O' || data.matrix_2D[i][k]=='/'){
+                    count--;
+                }
+            }
+                if(count==2){
+                    return true;
+                }
+        }
+    }
+
+    return false;
+
+}
+
+void inputInBarCom(int *x, int *y){
+    int count=0;
+    int i, j, k;
+
+    //cek bar X
+    for(i=1; i<ukuran; i++){
+        for(j=1; j<ukuran-2; j++){
+            count = 0;
+            for(k=j; k<j+3; k++){
+                 if(data.matrix_2D[i][k]=='X'){
+                    count++;
+                 }
+                 else if(data.matrix_2D[i][k]=='O' || data.matrix_2D[i][k]=='/'){
+                    count--;
+                 }
+            }
+                if(count==2){
+                    k=k-1;
+                    //printf("\ncek count problem\n");
+                    for(k; k>=j; k--){
+                        if(data.matrix_2D[i][k]=='\0'){
+                            *x = i;
+                            *y = k;
+                            //printf("\nisi dengan %d %d\n", i , k);
+                           // Sleep(2000);
+                            goto finish;
+                        }
+                    }
+                }
+        }
+    }
+
+    finish:
+        count=0;
+
+}
+
 bool CekCol() {
     int count=0;
     int i, j, k;
@@ -785,6 +958,62 @@ bool CekCol() {
 
     return false;
 
+}
+
+bool CekColCom() {
+
+    int i, j, k, count=0;
+
+    for(i=1; i<ukuran; i++){
+        for(j=1; j<ukuran-2; j++){
+            count = 0;
+            for(k=j; k<j+3; k++){
+               if(data.matrix_2D[k][i]=='X'){
+                    count++;
+                } else if (data.matrix_2D[k][j]=='O' || data.matrix_2D[k][j]=='/'){
+                    count--;
+                }
+            }
+                if(count==2){
+                    return true;
+                }
+        }
+    }
+
+    return false;
+
+}
+
+void inputInColCom(int *x, int *y){
+    int i, j, k, count=0;
+
+    for(i=1; i<ukuran; i++){
+        for(j=1; j<ukuran-2; j++){
+            count = 0;
+            for(k=j; k<j+3; k++){
+               if(data.matrix_2D[k][i]=='X'){
+                    count++;
+                } else if(data.matrix_2D[k][i]=='O' || data.matrix_2D[k][i]=='/'){
+                    count--;
+                }
+            }
+                if(count==2){
+                    k = k-1;
+                    for(k; k>=j; k--){
+                        if(data.matrix_2D[k][i]=='\0'){
+                            *x = k;
+                            *y = i;
+                           // printf("\nIsi %d %d\n", k , i);
+                            //Sleep(2000);
+                            goto finish;
+                        }
+                    }
+                }
+        }
+    }
+
+    finish:
+        count=0;
 }
 
 bool CekDiagon() {
@@ -893,7 +1122,7 @@ bool CekDiagon() {
          for(k=1; k<ukuran-2; k++){
             count = 0;
             for(i=l; i<l+3; i++){
-                for(j=k+3-1; j>=k; j--){
+                for(j=k+2; j>=k; j--){
                     if(i+j==k+3+tambahKol){
                         if(data.matrix_2D[j][i]=='O'){
                             count++;
@@ -901,9 +1130,9 @@ bool CekDiagon() {
                     }
                     if(count==3){
                         for(i; i>=l; i--){
-                            for(j=k+2; j>=k; j--){
-                                if(i+tambahBar==j+tambahKol){
-                                    data.matrix_2D[i][j]='/';
+                            for(j=k; j<=k+2; j++){
+                                if(i+j==k+3+tambahKol){
+                                    data.matrix_2D[j][i]='/';
                                 }
                             }
                         }
@@ -919,6 +1148,174 @@ bool CekDiagon() {
 
     //jika tidak sama
     return false;
+
+}
+
+bool CekDiagonLRCom(){
+    int count=0, tambahBar = 0, tambahKol = 0;
+    int i, j, k, l;
+
+    //cek diagon bar left to right X
+    for(l=1; l<ukuran-2; l++){
+    tambahBar = 0;
+        for(k=1; k<ukuran-2; k++){
+            count=0;
+            for(i=l; i<l+3; i++){
+                for(j=k; j<k+3; j++){
+                    if(i+tambahBar==j+tambahKol){
+                        if(data.matrix_2D[i][j]=='X'){
+                            count++;
+                        } else if(data.matrix_2D[i][j]=='O' || data.matrix_2D[i][j]=='/'){
+                            count--;
+                        }
+                    }
+                }
+            }
+                if(count==2){
+                    return true;
+                }
+            tambahBar++;
+        }
+        tambahKol++;
+    }
+
+    return false;
+}
+
+bool CekDiagonRLCom(){
+    int count=0, tambahBar = 0, tambahKol = 0;
+    int i, j, k, l;
+
+    //cek right to left diagon
+    for(l=1; l<ukuran-2; l++){
+        tambahBar=0;
+         for(k=1; k<ukuran-2; k++){
+            count = 0;
+            for(i=l; i<l+3; i++){
+                for(j=k+2; j>=k; j--){
+                    if(i+j==k+3+tambahKol){
+                        if(data.matrix_2D[j][i]=='X'){
+                            count++;
+                        } else if (data.matrix_2D[j][i]=='O' || data.matrix_2D[j][i]=='/'){
+                            count--;
+                        }
+                    }
+
+                }
+            }
+                if(count==2){
+                    return true;
+                }
+            tambahBar++;
+        }
+        tambahKol++;
+    }
+
+    return false;
+
+}
+
+void inputInDiagonCom(int *x, int *y) {
+    int count=0, tambahBar = 0, tambahKol = 0;
+    int i=0, j=0, k=0, l=0, bar=0, col=0;
+
+    if(CekDiagonLRCom()){
+        //input diagon bar left to right X
+        for(l=1; l<ukuran-2; l++){
+        tambahBar = 0;
+            for(k=1; k<ukuran-2; k++){
+                count=0;
+                for(i=l; i<l+3; i++){
+                    for(j=k; j<k+3; j++){
+                        if(i+tambahBar==j+tambahKol){
+                            if(data.matrix_2D[i][j]=='X'){
+                                count++;
+                            } else if(data.matrix_2D[i][j]=='O' || data.matrix_2D[i][j]=='/'){
+                                count--;
+                            }
+                        }
+                    }
+                }
+                    if(count==2){
+                        for(i=l; i<l+3; i++){
+                            for(j=k; j<k+3; j++){
+                                if(i+tambahBar==j+tambahKol){
+                                    if(data.matrix_2D[i][j]=='\0'){
+                                        *x = i;
+                                        *y = j;
+                                        //printf("\nisi RL : %d %d\n", i , j);
+                                        //Sleep(2000);
+                                        goto finish;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                tambahBar++;
+            }
+            tambahKol++;
+        }
+    }
+    else if (CekDiagonRLCom()){
+        for(l=1; l<ukuran-2; l++){
+            tambahBar=0;
+             for(k=1; k<ukuran-2; k++){
+                count = 0;
+                for(i=l; i<l+3; i++){
+                    for(j=k+2; j>=k; j--){
+                        if(i+j==k+3+tambahKol){
+                            if(data.matrix_2D[j][i]=='X'){
+                                count++;
+                            } else if (data.matrix_2D[j][i]=='O' || data.matrix_2D[j][i]=='/'){
+                                count--;
+                            }
+                        }
+
+                    }
+                }
+                    if(count==2){
+                        for(i=l; i<l+3; i++){
+                            for(j=k+2; j>=k; j--){
+                                if(i+j==k+3+tambahKol){
+                                    if(data.matrix_2D[j][i]=='\0'){
+                                        *x = j;
+                                        *y = i;
+                                        //printf("\nisi RL : %d %d\n", j , i);
+                                        //Sleep(2000);
+                                        goto finish;
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                tambahBar++;
+            }
+            tambahKol++;
+        }
+    }
+
+    finish:
+        count = 0;
+
+}
+
+void inputRandCom(int *x, int *y){
+    int bar=0, col=0;
+    const int len=ukuran-1;
+
+    //srand(time(0));
+    bar = rand()%len+1;
+    col = rand()%len+1;
+
+    if(CekSel(bar, col)){
+        *x = bar;
+        *y = col;
+    } else {
+        inputRandCom(&bar, &col);
+        *x = bar;
+        *y = col;
+    }
 
 }
 
@@ -962,7 +1359,7 @@ void Medium() {
     ukuran = 6;
     waktu = 7;
 
-    if(data.posisi!=1 || data.posisi!=2){
+    if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
     }
 
@@ -986,7 +1383,7 @@ void Hard() {
     ukuran = 8;
     waktu = 5;
 
-    if(data.posisi!=1 || data.posisi!=2){
+    if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
     }
 
@@ -1015,7 +1412,54 @@ void PlayerVsComputer() {
 
 }
 
-char p_com_InputO() {}
+void p_com_InputO(int *x, int *y, double *waktuInput) {
+    int bar=0, col=0;
+    int i, j, k, l;
+    int t;
+
+    t = StartTime();
+        /*cek bar, col and diagon for input bar and col computer*/
+        if(CekBarCom()){
+            //printf("\n cek bar problem\n");
+            //Sleep(1000);
+            inputInBarCom(&bar, &col);
+            if (data.matrix_2D[bar][col]=='\0'){
+                //printf("\nbar\n");
+                goto here;
+            }
+        } if (CekColCom()){
+            //printf("\n cek col problem\n");
+            //Sleep(1000);
+            inputInColCom(&bar, &col);
+            if (data.matrix_2D[bar][col]=='\0'){
+                    //printf("\ncol\n");
+                goto here;
+            }
+        } if (CekDiagonLRCom() || CekDiagonRLCom()) {
+           // printf("\n cek diagon problem\n");
+           // Sleep(1000);
+            inputInDiagonCom(&bar, &col);
+            if (data.matrix_2D[bar][col]=='\0'){
+                //printf("\ndiagon\n");
+                goto here;
+            }
+        }
+
+    here:
+        if(bar==0 && col ==0){
+            inputRandCom(&bar, &col);
+        }
+
+        printf("(O) input baris kolom : %d %d", bar, col);
+
+    t = EndTime() - t;
+    Sleep(2000);
+
+    *x = bar;
+    *y = col;
+    *waktuInput = ((double)t)/CLOCKS_PER_SEC;
+
+}
 
 void HighScores() {
 
@@ -1233,6 +1677,8 @@ void savedGame(){
 
         fwrite(&data, sizeof(struct dataPlayer), 1, savedFile);
 
+        fclose(savedFile);
+
         if(fwrite != 0){
             printf("Game berhasil disimpan !!!");
             printf("Mau lanjut ? (y/t) : ");
@@ -1242,13 +1688,12 @@ void savedGame(){
             if(c == 'y'){
                 PlayTheGame();
             } else {
-                exitGame();
+                main();
             }
         } else {
             printf("Ops, ada yang salah :(");
         }
 
-        fclose(savedFile);
 
     } else {
         printf("Oke lanjut gan ...");
@@ -1260,3 +1705,21 @@ void savedGame(){
 void exitGame() {
     exit(0);
 }
+
+void SetColor(int ForgC)
+ {
+ WORD wColor;
+
+  HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+                       //We use csbi for the wAttributes word.
+ if(GetConsoleScreenBufferInfo(hStdOut, &csbi))
+ {
+                 //Mask out all but the background attribute, and add in the forgournd color
+      wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+      SetConsoleTextAttribute(hStdOut, wColor);
+ }
+
+}
+
