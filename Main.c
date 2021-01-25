@@ -76,7 +76,7 @@ int main() {
     system("color 0B");
 
     //play backsound
-    PlaySound(TEXT("musik.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    //PlaySound(TEXT("musik.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
         LoadDisplay();
