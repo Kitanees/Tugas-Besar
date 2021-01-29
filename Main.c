@@ -43,6 +43,7 @@ void Medium();
 void Hard();
 void PlayerVsComputer();
 void p_com_InputO(int *x, int *y, double *waktuInput);
+void yourGame();
 void HighScores();
 void Help();
 void AboutAuthor();
@@ -76,7 +77,7 @@ int main() {
     system("color 0B");
 
     //play backsound
-    //PlaySound(TEXT("musik.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
         LoadDisplay();
@@ -111,6 +112,8 @@ menu:
 
 void LoadDisplay() {
     int i;
+
+    system("cls");
 
     for(i=0; i<=100; i++){
         printf("%d %%\nloading . . .", i);
@@ -190,14 +193,15 @@ int ChooseLevel() {
     printf("Pilih Level : \n");
     printf("1. Easy\n");
     printf("2. Medium\n");
-    printf("3. Hard\n\n");
+    printf("3. Hard\n");
+    printf("4. Your Own Game\n\n");
     printf("Pilihan kamu : ");
     while(scanf("%d", &x)!= 1 && getchar() != '\n'){
         printf("! ONLY INTEGER ! ==> ");
     }
     system("cls");
 
-    if(x>=1 && x<=3){
+    if(x>=1 && x<=4){
        return x;
     } else {
         printf("Ops anda salah menginputkan !\n");
@@ -240,6 +244,7 @@ void PlayerVsPlayer() {
         case 1: Easy(); break;
         case 2: Medium(); break;
         case 3: Hard(); break;
+        case 4: yourGame(); break;
     }
 
 }
@@ -381,9 +386,20 @@ int suit() {
 
 void Easy() {
 
+    char c;
+    data.mulai = true;
+    bool lagu = true;
+
     bonus = 300;
     ukuran = 4;
     waktu = 10;
+
+    if(lagu){
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        lagu = false;
+    }
+
+    LoadDisplay();
 
     if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
@@ -397,8 +413,22 @@ void Easy() {
 
     system("cls");
     DisplayBoard();
-    printf("\nGAME OVER\n");
-    HighScores();
+    if(CekPenuh()){
+        printf("\nSERI\n");
+        printf("Ulang (y/t) ? ");
+        scanf("%c", &c);
+        scanf("%c", &c);
+        if(c=='y'){
+            Easy();
+        }else{
+            main();
+        }
+    }else{
+        printf("\nGAME OVER\n");
+        HighScores();
+    }
+
+
 
 }
 
@@ -742,6 +772,7 @@ void PlayTheGame() {
         }
         data.posisi=data.posisi-1;
     }
+
 
 }
 
@@ -1349,6 +1380,8 @@ void GameOver() {
             else if(!data.mulai){
                 data.mulai=true;
             }
+        } else if (CekPenuh()){
+            printf("\nSERI\n");
         }
 
 }
@@ -1358,6 +1391,15 @@ void Medium() {
     bonus = 120;
     ukuran = 6;
     waktu = 7;
+
+    bool lagu = true;
+
+    if(lagu){
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        lagu = false;
+    }
+
+    LoadDisplay();
 
     if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
@@ -1382,6 +1424,15 @@ void Hard() {
     bonus = 150;
     ukuran = 8;
     waktu = 5;
+
+    bool lagu = true;
+
+    if(lagu){
+        PlaySound(TEXT("musicingame"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        lagu = false;
+    }
+
+    LoadDisplay();
 
     if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
@@ -1408,6 +1459,7 @@ void PlayerVsComputer() {
     case 1: Easy(); break;
     case 2: Medium(); break;
     case 3: Hard(); break;
+    case 4: yourGame(); break;
     }
 
 }
@@ -1461,6 +1513,64 @@ void p_com_InputO(int *x, int *y, double *waktuInput) {
 
 }
 
+void yourGame(){
+
+    printf("Berapa ukuran papan mu ? ");
+    while(scanf("%d", &ukuran)!= 1 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
+
+    if(ukuran<=3){
+        printf("Maaf papan mu tidak bisa diciptakan karena ukurannya terlalu kecil\n");
+        printf("Ulangi lagi yah :)\n");
+        Sleep(3000);
+        yourGame();
+    }
+
+    printf("Berapa lama batas waktu inputan ? ");
+    while(scanf("%lf", &waktu)!= 1 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
+
+    if(waktu<=0){
+        printf("Maaf waktu mu tidak bisa diciptakan karena waktunya terlalu kecil\n");
+        printf("Ulangi lagi yah :)\n");
+        Sleep(3000);
+        yourGame();
+    }
+
+    printf("Berapa skor bonus yang mau kamu dapatkan ?");
+    while(scanf("%d", &bonus)!= 1 && getchar() != '\n'){
+        printf("! ONLY INTEGER ! ==> ");
+    }
+
+    bool lagu = true;
+
+    if(lagu){
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        lagu = false;
+    }
+
+    LoadDisplay();
+
+    if(data.posisi!=1 && data.posisi!=2){
+        persiapanMatrix();
+    }
+
+    DisplayBoard();
+
+    while (data.mulai) {
+        PlayTheGame();
+    }
+
+    system("cls");
+    DisplayBoard();
+    printf("\nGAME OVER\n");
+
+    HighScores();
+
+}
+
 void HighScores() {
 
     char c;
@@ -1469,7 +1579,7 @@ void HighScores() {
     struct formatHS{
         char namaPemenang[20];
         int skor;
-    }sortScore[100], tulis;
+    }sortScore[500], tulis;
 
     /*open file for writing appending*/
     if(ukuran!=0){
@@ -1507,7 +1617,7 @@ void HighScores() {
 
         //input array of struct from file
         while(fread(&sortScore[i], sizeof(struct formatHS), 1, sortFile)){
-            printf("loading . . .\n");
+            printf("%d\n", i);
             system("cls");
             i++;
             n++;
@@ -1706,8 +1816,9 @@ void exitGame() {
     exit(0);
 }
 
-void SetColor(int ForgC)
- {
+void SetColor(int ForgC){
+
+    //code copy  from stackoverflow
  WORD wColor;
 
   HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
