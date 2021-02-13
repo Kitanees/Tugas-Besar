@@ -50,11 +50,12 @@ void AboutAuthor();
 void loadGame();
 void savedGame();
 void exitGame();
-void gotoxy(int x,int y);
 
 /*modul interface*/
 void SetColor(int ForgC);
-
+void gotoxy();
+//variabel interface
+int tampilX, tampilY;
 
 //variabel global
 int ukuran, bonus;
@@ -68,17 +69,18 @@ struct dataPlayer {
     int score_2;
     char nama[20];
     char nama_2[20];
-    char matrix_2D[10][10];
+    char matrix_2D[12][12];
     bool mulai;
 } data;
 
+//modul utama
 int main() {
 
     //set background
     system("color 0B");
 
     //play backsound
-    //PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
         LoadDisplay();
@@ -101,9 +103,9 @@ menu:
     case 5: AboutAuthor(); break;
     case 6: exitGame(); break;
     default:
-        gotoxy(45,12);printf("WRONG INPUT NUMBER.\n");
-        gotoxy(30,14);printf("Pilih nomer aja salah, apalagi pilih pasangan hidup -.-\n\n");
-        gotoxy(35,18);system("pause");
+        gotoxy(50, 13);printf("WRONG INPUT NUMBER.\n");
+        gotoxy(33, 14);printf("Pilih Nomer Aja Salah, Apalagi Pilih Pasangan Hidup -.-\n\n");
+        gotoxy(45, 15);system("pause");
         system("cls");
         goto menu;
     }
@@ -113,42 +115,53 @@ menu:
 
 void LoadDisplay() {
     int i=0;
+    tampilX = 50;
+    tampilY = 13;
 
     system("cls");
-
-    do{
-		i=i+1;
-			gotoxy(55,12);printf("%d %%\n", i);
-			gotoxy(50,14);printf("LOADING . . . .  ");
-		system("cls");
-	}
-	while(i<100);
-        system("cls");
+        gotoxy(tampilX+5, tampilY); printf("%d %%\n", i);
+        gotoxy(tampilX+2, tampilY+1); printf("Loading -");
+    for(i=1; i<=100; i++){
+        gotoxy(tampilX+5, tampilY); printf("%d %%\n", i);
+        if((1+i)%5==0){
+            gotoxy(tampilX+2, tampilY+1); printf("Loading -");
+        }else if ((1+i)%4==0){
+            gotoxy(tampilX+2, tampilY+1); printf("Loading \\");
+        } else if ((1+i)%3==0){
+            gotoxy(tampilX+2, tampilY+1); printf("Loading |");
+        }  else if ((1+i)%2==0){
+            gotoxy(tampilX+2, tampilY+1); printf("Loading /");
+        }
+        gotoxy(tampilX+12, tampilY+1);system("cls");
+    }
 
 
 }
 
 void DisplayMenu() {
+    tampilX=30;
+    tampilY=10;
 
     system("cls");
 
-    gotoxy(53,10);printf("MENU\n");
-    gotoxy(30,12);printf("=====================================================\n");
-    gotoxy(48,14);printf("1. Play Game\n");
-    gotoxy(48,15);printf("2. Load Game\n");
-    gotoxy(48,16);printf("3. High Score\n");
-    gotoxy(48,17);printf("4. Help\n");
-    gotoxy(48,18);printf("5. About Author\n");
-    gotoxy(48,19);printf("6. Exit\n\n");
-    gotoxy(40,22);printf("Silahkan Pilih Menu : ");
+    gotoxy(tampilX, tampilY);printf("|||||||||||||||||||||||| MENU |||||||||||||||||||||||\n");
+    gotoxy(tampilX, tampilY+1);printf("=====================================================\n");
+    gotoxy(tampilX+2, tampilY+2);printf("1. Play Game\n");
+    gotoxy(tampilX+2, tampilY+3);printf("2. Load Game\n");
+    gotoxy(tampilX+2, tampilY+4);printf("3. High Score\n");
+    gotoxy(tampilX+2, tampilY+5);printf("4. Help\n");
+    gotoxy(tampilX+2, tampilY+6);printf("5. About Author\n");
+    gotoxy(tampilX+2, tampilY+7);printf("6. Exit\n\n");
+    gotoxy(tampilX, tampilY+9);printf("Silahkan Pilih Menu Anda : ");
 
 }
 
 int InputMenu() {
-    int x;
+    int x, tambah=0;
 
     while(scanf("%d", &x)!= 1 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
+        gotoxy(tampilX, tampilY+10+tambah);printf("! ONLY INTEGER ! ==> ");
+        tambah++;
     }
 
     system("cls");
@@ -170,22 +183,26 @@ void StartGame() {
 }
 
 int ChooseEnemy() {
-    int x;
+    int x, tambah=0;
+    tampilX = 45;
+    tampilY = 11;
 
-    gotoxy(40,12);printf("Pilih Lawan : \n");
-    gotoxy(50,13);printf("1. Player Vs Player\n");
-    gotoxy(50,14);printf("2. Player Vs Computer\n\n");
-    gotoxy(40,16);printf("Pilihan kamu : ");
+    gotoxy(tampilX+10, tampilY);printf("Pilih Lawan\n");
+    gotoxy(tampilX, tampilY+1);printf("=============================\n");
+    gotoxy(tampilX+2, tampilY+2);printf("1. Player Vs Player\n");
+    gotoxy(tampilX+2, tampilY+3);printf("2. Player Vs Computer\n\n");
+    gotoxy(tampilX, tampilY+5);printf("Pilihan Kamu : ");
     while(scanf("%d", &x)!= 1 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
+        gotoxy(tampilX, tampilY+6+tambah);printf("! ONLY INTEGER ! ==> ");
+        tambah++;
     }
     system("cls");
 
     if(x==1 || x==2){
         return x;
     }else {
-        gotoxy(45,12);printf("Ops!11, anda salah input\n");
-        gotoxy(45,14);system("pause");
+        gotoxy(tampilX, tampilY+6);printf("Ops, anda salah input\n");
+        gotoxy(tampilX, tampilY+7);system("pause");
         system("cls");
         return ChooseEnemy();
     }
@@ -193,24 +210,28 @@ int ChooseEnemy() {
 }
 
 int ChooseLevel() {
-    int x;
+    int x, tambah=0;
+    tampilX = 45;
+    tampilY = 10;
 
-    gotoxy(40,12);printf("Pilih Level : \n");
-    gotoxy(50,13);printf("1. Easy\n");
-    gotoxy(50,14);printf("2. Medium\n");
-    gotoxy(50,15);printf("3. Hard\n");
-    gotoxy(50,16);printf("4. Your Own Game\n\n");
-    gotoxy(40,18);printf("Pilihan kamu : ");
+    gotoxy(tampilX+10, tampilY);printf("Pilih Level\n");
+    gotoxy(tampilX, tampilY+1);printf("=============================\n");
+    gotoxy(tampilX+2, tampilY+2);printf("1. Easy\n");
+    gotoxy(tampilX+2, tampilY+3);printf("2. Medium\n");
+    gotoxy(tampilX+2, tampilY+4);printf("3. Hard\n");
+    gotoxy(tampilX+2, tampilY+5);printf("4. Your Own Game\n\n");
+    gotoxy(tampilX, tampilY+7);printf("Pilihan Kamu : ");
     while(scanf("%d", &x)!= 1 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
+        gotoxy(tampilX, tampilY+8+tambah);printf("! ONLY INTEGER ! ==> ");
+        tambah++;
     }
     system("cls");
 
     if(x>=1 && x<=4){
        return x;
     } else {
-        gotoxy(45,12);printf("Ops anda salah menginputkan !\n");
-        gotoxy(45,14);system("pause");
+        gotoxy(tampilX, tampilY+8);printf("Ops Anda Salah Menginputkan Pilihan!\n");
+        gotoxy(tampilX, tampilY+9);system("pause");
         system("cls");
         return ChooseLevel();
     }
@@ -218,24 +239,26 @@ int ChooseLevel() {
 }
 
 void InpuNama() {
+    tampilX = 43;
+    tampilY = 13;
 
     if(data.enemy==1){
-        gotoxy(45,12);printf("nama player 1 (X) : ");
+        gotoxy(tampilX+2, tampilY);printf("Nama Player 1 (X) : ");
         fgets(data.nama, sizeof(data.nama), stdin);
         data.nama[strlen(data.nama) - 1] = '\0';
         scanf("%[^\n]s", data.nama);
-        gotoxy(45,13);printf("nama player 2 (O) : ");
+        gotoxy(tampilX+2, tampilY+1);printf("Nama Player 2 (O) : ");
         fgets(data.nama_2, sizeof(data.nama_2), stdin);
         data.nama_2[strlen(data.nama_2) - 1] = '\0';
         scanf("%[^\n]s", data.nama_2);
     } else {
-        gotoxy(45,13);printf("nama kamu : ");
+        gotoxy(tampilX, tampilY);printf("Nama Kamu : ");
         fgets(data.nama, sizeof(data.nama), stdin);
         data.nama[strlen(data.nama) - 1] = '\0';
         scanf("%[^\n]s", data.nama);
         strcpy(data.nama_2, "Arva_Com");
-        gotoxy(45,14);printf("nama komputer : %s\n", data.nama_2);
-        gotoxy(45,15);system("pause");
+        gotoxy(tampilX, tampilY+1);printf("Nama Komputer : %s\n", data.nama_2);
+        gotoxy(tampilX, tampilY+2);system("pause");
 
     }
 
@@ -257,13 +280,15 @@ void PlayerVsPlayer() {
 int suit() {
 
 		//Deklarasi
-		int kom, P,s,i,menang;
+		int kom, P, menang;
+		tampilX = 40;
+		tampilY = 13;
 		//Deskripsi: merandom nomor suwit computer
 		//Input: -
 		//Output: integer hasil random suwit
         system("cls");
-		gotoxy(25,8);printf("Sebelum Bermain, Tentukan siapa yang akan Bermain Terlebih Dahulu....\n");
-		gotoxy(35,9);printf("Tunggu Sebentar. Jangan Kemana - mana!!! ");
+		gotoxy(tampilX+2, tampilY);printf("Sebelum Bermain, Mari Kita SUIT ....\n");
+		gotoxy(tampilX, tampilY+1);printf("Tunggu Sebentar, Jangan Kemana - Mana !!! ");
         Sleep(5000);
 		system("cls");
 		do{
@@ -274,54 +299,57 @@ int suit() {
 					P =rand()%3+1;
 					kom=rand()%3+1;
 						if(kom==1){
-							gotoxy(45,11);printf("PLAYER %s MENDAPATKAN BATU\n", data.nama_2);
+							gotoxy(tampilX, tampilY);printf("PLAYER 2 %s MENDAPATKAN : BATU\n", data.nama_2);
 							if(P==1){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN BATU\n", data.nama);
-								gotoxy(45,14);printf("HASIL SERI!!! ULANGI LAGI!");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : BATU\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("HASIL SERI !!! ULANGI LAGI !!!");
+								Sleep(1000);
 							}
 							else if(P==2){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama);
-								gotoxy(45,14);printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama_2);
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : GUNTING\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=2;
 							}
 							else if(P==3){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama);
-								gotoxy(45,14);printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama);
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : KERTAS\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama);
 								menang=1;
 							}
 						}
 						else if(kom==2){
-							gotoxy(45,11);printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama_2);
+							gotoxy(tampilX, tampilY);printf("PLAYER 2 %s MENDAPATKAN : GUNTING\n", data.nama_2);
 							if(P==1){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN BATU\n", data.nama);
-								gotoxy(45,14);printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama);
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : BATU\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama);
 								menang=1;
 							}
 							else if(P==2){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama);
-								gotoxy(45,14);printf("HASIL SERI!!! ULANGI LAGI!");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : GUNTING\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("HASIL SERI !!! ULANGI LAGI !!!");
+								Sleep(1000);
 							}
 							else if(P==3){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama);
-								gotoxy(45,14);printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama_2);
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : KERTAS\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=2;
 							}
 						}
 						else if(kom==3){
-							gotoxy(45,11);printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama_2);
+							gotoxy(tampilX, tampilY);printf("PLAYER 2 %s MENDAPATKAN : KERTAS\n", data.nama_2);
 							if(P==1){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN BATU\n", data.nama);
-								gotoxy(45,14);printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama_2);
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : BATU\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=2;
 							}
 							else if(P==2){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN GUNTING\n", data.nama);
-								gotoxy(45,14);printf("PLAYER %s BERMAIN TERLEBIH DAHULU", data.nama);
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : GUNTING\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 1 %s BERMAIN TERLEBIH DAHULU", data.nama);
 								menang=1;
 							}
 							else if(P==3){
-								gotoxy(45,12);printf("PLAYER %s MENDAPATKAN KERTAS\n", data.nama);
-								gotoxy(45,14);printf("HASIL SERI!!! ULANGI LAGI!");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : KERTAS\n", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("HASIL SERI! !! ULANGI LAGI !!!");
+								Sleep(1000);
 							}
 						}
 				break;
@@ -329,54 +357,57 @@ int suit() {
 					P =rand()%3+1;
 					kom=rand()%3+1;
 						if(kom==1){
-							gotoxy(45,11);printf("KOMPUTER MENDAPATKAN BATU\n");
+							gotoxy(tampilX, tampilY);printf("KOMPUTER MENDAPATKAN : BATU\n");
 							if(P==1){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN BATU\n");
-								gotoxy(45,14);printf("HASIL SERI!!! ULANGI LAGI!");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : BATU\n");
+								gotoxy(tampilX, tampilY+3);printf("HASIL SERI !!! ULANGI LAGI !!!");
+								Sleep(1000);
 							}
 							else if(P==2){
-								gotoxy(45,12);printf("Player mendapatkan Gunting\n");
-								gotoxy(45,14);printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : GUNTING\n");
+								gotoxy(tampilX, tampilY+3);printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
 								menang=2;
 							}
 							else if(P==3){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN KERTAS\n");
-								gotoxy(45,14);printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : KERTAS\n");
+								gotoxy(tampilX, tampilY+3);printf("PLAYER BERMAIN TERLEBIH DAHULU");
 								menang=1;
 							}
 						}
 						else if(kom==2){
-							gotoxy(45,11);printf("KOMPUTER MENDAPATKAN GUNTING\n");
+							gotoxy(tampilX, tampilY);printf("KOMPUTER MENDAPATKAN : GUNTING\n");
 							if(P==1){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN BATU\n");
-								gotoxy(45,14);printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : BATU\n");
+								gotoxy(tampilX, tampilY+3);printf("PLAYER BERMAIN TERLEBIH DAHULU");
 								menang=1;
 							}
 							else if(P==2){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN GUNTING\n");
-								gotoxy(45,14);printf("HASIL SERI!!! ULANGI LAGI!");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : GUNTING\n");
+								gotoxy(tampilX, tampilY+3);printf("HASIL SERI !!! ULANGI LAGI !!!");
+								Sleep(1000);
 							}
 							else if(P==3){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN KERTAS\n");
-								gotoxy(45,14);printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : KERTAS\n");
+								gotoxy(tampilX, tampilY+3);printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
 								menang=2;
 							}
 						}
 						else if(kom==3){
-							gotoxy(45,11);printf("KOMPUTER MENDAPATKAN KERTAS\n");
+							gotoxy(tampilX, tampilY);printf("KOMPUTER MENDAPATKAN : KERTAS\n");
 							if(P==1){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN BATU\n");
-								gotoxy(45,14);printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : BATU\n");
+								gotoxy(tampilX, tampilY+3);printf("KOMPUTER BERMAIN TERLEBIH DAHULU");
 								menang=2;
 							}
 							else if(P==2){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN GUNTING\n");
-								gotoxy(45,14);printf("PLAYER BERMAIN TERLEBIH DAHULU");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : GUNTING\n");
+								gotoxy(tampilX, tampilY+3);printf("PLAYER BERMAIN TERLEBIH DAHULU");
 								menang=1;
 							}
 							else if(P==3){
-								gotoxy(45,12);printf("PLAYER MENDAPATKAN KERTAS\n");
-								gotoxy(45,14);printf("HASIL SERI!!! ULANGI LAGI!");
+								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : KERTAS\n");
+								gotoxy(tampilX, tampilY+2);printf("HASIL SERI !!! ULANGI LAGI !!!");
+								Sleep(1000);
 							}
 						}
 						break;
@@ -384,7 +415,7 @@ int suit() {
 					}while(P==kom);
 
 					printf("\n");
-                    gotoxy(45,16);system("pause");
+                    gotoxy(tampilX, tampilY+5);system("pause");
 					system("cls");
 					return menang;
 }
@@ -399,12 +430,23 @@ void Easy() {
     ukuran = 4;
     waktu = 10;
 
-    /*if(lagu){
+    if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
+
+    gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
+    fflush(stdin);
+    scanf("%c", &c);
+    if(c=='t'){
+        Help();
+    } else {
+        gotoxy(50, tampilY+1);printf("Selamat Bermain BRO !!!");
+        Sleep(2000);
+        system("cls");
+    }
 
     if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
@@ -418,23 +460,21 @@ void Easy() {
 
     system("cls");
     DisplayBoard();
-    if(CekPenuh()){
-        printf("\nSERI\n");
-        printf("Ulang (y/t) ? ");
+    if(data.score_1 == 0 && data.score_2==0){
+        gotoxy(50, tampilY); printf("SERI");
+        gotoxy(50, tampilY+1); printf("Ulang (y/t) ? ");
         scanf("%c", &c);
         scanf("%c", &c);
         if(c=='y'){
+            persiapanMatrix();
             Easy();
         }else{
             main();
         }
     }else{
-        printf("\nGAME OVER\n");
+        gotoxy(50, tampilY+1); printf("GAME OVER\n");
         HighScores();
     }
-
-
-
 }
 
 void persiapanMatrix() {
@@ -461,35 +501,56 @@ void persiapanMatrix() {
 }
 
 void DisplayBoard(){
-    int i, j;
+    int i, j, tampilTengah;
+    tampilX = 50 ;
+    tampilY = 10 ;
+    tampilTengah = ((tampilX+17+((ukuran-4)*4))+(tampilX-9))/2 + 5;
 
     system("color 0B");
-    printf("\n%s\t\t vs \t\t%s\n", data.nama, data.nama_2);
-    printf("score X : %d \t\t\tscore O : %d\n\n", data.score_1, data.score_2);
+    gotoxy(tampilX-9, tampilY-5);printf("%s", data.nama);
+    gotoxy(tampilTengah, tampilY-5);printf("vs");
+    gotoxy(tampilX+17+((ukuran-4)*4), tampilY-5);printf("%s", data.nama_2);
+    gotoxy(tampilX-9, tampilY-3);printf("score X : %d", data.score_1);
+    gotoxy(tampilX+17+((ukuran-4)*4), tampilY-3);printf("score O : %d", data.score_2);
 
     for (i = 0; i < ukuran; i++) {
+            tampilX = 50;
         for (j = 0; j < ukuran; j++) {
             if(data.matrix_2D[i][j]=='\0'){
                 SetColor(9);
-                printf("|_ _");
+                gotoxy(tampilX, tampilY);printf("|_ _");
+                //tampilY++;
+                tampilX+=4;
             } else if (data.matrix_2D[i][j]>=48 && data.matrix_2D[i][j] <= 57){
                 SetColor(10);
-                printf("  %c ", data.matrix_2D[i][j]);
+                gotoxy(tampilX, tampilY);printf("  %c ", data.matrix_2D[i][j]);
+                //tampilY++;
+                tampilX+=4;
             } else if (data.matrix_2D[i][j] != '/' && data.matrix_2D[i][j] != '\\'){
                 SetColor(14);
-                printf("|_%c_", data.matrix_2D[i][j]);
+                gotoxy(tampilX, tampilY);printf("|_%c_", data.matrix_2D[i][j]);
+                //tampilY++;
+                tampilX+=4;
             } else if (data.matrix_2D[i][j]=='/'){
                 SetColor(4);
-                printf("|_%c_", data.matrix_2D[i][j]);
+                gotoxy(tampilX, tampilY);printf("|_%c_", data.matrix_2D[i][j]);
+                //tampilY++;
+                tampilX+=4;
             } else {
                 SetColor(5);
-                printf("|_%c_", data.matrix_2D[i][j]);
+                gotoxy(tampilX, tampilY);printf("|_%c_", data.matrix_2D[i][j]);
+                //tampilY++;
+                tampilX+=4;
             }
         }
         if (data.matrix_2D[i][j-1]>=48 && data.matrix_2D[i][j-1] <= 57){
-            printf("\n\n");
+            gotoxy(tampilX, tampilY);printf("\n\n");
+            tampilY+=2;
+            //tampilX++;
         } else {
-            printf("| \n\n");
+            gotoxy(tampilX, tampilY);printf("| \n\n");
+            tampilY+=2;
+            //tampilX++;
         }
     }
 
@@ -501,10 +562,10 @@ void PlayTheGame() {
     int bar = 0, col = 0;
     double waktuInput = 0;
     bool penuh = true;
-
+    tampilX = 50;
 
     if (data.enemy == 1 && data.menangSuit == 1) {
-        //Inputan ;
+        //Inputan jika player 1 main dulu mode p vs p
         if(data.posisi==1 || data.posisi==0){
             data.posisi = 1;
             p_1_InputX(&bar, &col, &waktuInput);
@@ -528,11 +589,19 @@ void PlayTheGame() {
                     data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
                 }
             } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             } else if (bar == 0 && col ==0){
                 savedGame();
             } else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
             GameOver();
         }
@@ -561,11 +630,19 @@ void PlayTheGame() {
                 }
 
             } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             } else if(bar == 0 && col ==0){
                 savedGame();
             } else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
             GameOver();
         }
@@ -595,11 +672,19 @@ void PlayTheGame() {
                 }
 
             } else if(waktuInput>waktu){
-                    printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             } else if(bar == 0 && col ==0){
                 savedGame();
             } else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
             GameOver();
         }
@@ -628,11 +713,19 @@ void PlayTheGame() {
                 }
 
             } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             } else if(bar == 0 && col ==0){
                 savedGame();
             } else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
             GameOver();
         }
@@ -663,11 +756,19 @@ void PlayTheGame() {
                 }
 
             } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             } else if(bar == 0 && col ==0){
                     savedGame();
             } else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
             GameOver();
         }
@@ -696,11 +797,19 @@ void PlayTheGame() {
                 }
 
             } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             } else if(bar == 0 && col ==0){
                     savedGame();
             } else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
             GameOver();
         }
@@ -731,13 +840,21 @@ void PlayTheGame() {
                 }
 
             } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             }
             //else if(bar == 0 && col ==0){
               //      savedGame();
             //}
             else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
 
             GameOver();
@@ -767,11 +884,19 @@ void PlayTheGame() {
                 }
 
             } else if(waktuInput>waktu){
-                printf("giliran diganti karena :\n waktu berpikir anda %.2f s\n harusnya %.0f s\n", waktuInput, waktu);
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
             } else if(bar == 0 && col ==0){
                 savedGame();
             } else {
-                printf("kotak penuh, giliran diganti !\n");
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
             }
             GameOver();
         }
@@ -796,15 +921,17 @@ int EndTime() {
 }
 
 void p_1_InputX(int* x, int* y, double *waktuInput) {
-    int baris=0, kolom=0;
-    double time_taken=0;
+    int baris=0, kolom=0, tambah=0;
     int t;
+    tampilX = 50;
+    tampilY = tampilY;
 
     //StartTime
     t = StartTime();
-    printf("(X) input baris kolom : ");
+    gotoxy(tampilX, tampilY);printf("(X) input baris kolom : ");
     while(scanf("%d %d", &baris, &kolom)!= 2 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
+        gotoxy(tampilX, tampilY+1+tambah); printf("! ONLY INTEGER ! ==> ");
+        tambah++;
     }
     t = EndTime() - t;
 
@@ -815,15 +942,17 @@ void p_1_InputX(int* x, int* y, double *waktuInput) {
 }
 
 void p_2_InputO(int* x, int* y, double *waktuInput) {
-    int baris=0, kolom=0;
-    double time_taken=0;
+    int baris=0, kolom=0, tambah=0;
     int t;
+    tampilX = 50;
+    tampilY = tampilY;
 
     //StartTime
     t = StartTime();
-    printf("(O) input baris kolom : ");
+    gotoxy(tampilX, tampilY);printf("(O) input baris kolom : ");
     while(scanf("%d %d", &baris, &kolom)!= 2 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
+        gotoxy(tampilX, tampilY+1+tambah);printf("! ONLY INTEGER ! ==> ");
+        tambah++;
     }
     t = EndTime() - t;
 
@@ -857,7 +986,7 @@ bool CekBar() {
                     count++;
                 }
                 if(count==3){
-                    for(k; k>=j; k--){
+                    for(k=k; k>=j; k--){
                         data.matrix_2D[i][k]='\\';
                     }
                     return true;
@@ -876,7 +1005,7 @@ bool CekBar() {
                     count++;
                 }
                 if(count==3){
-                    for(k; k>=j; k--){
+                    for(k=k; k>=j; k--){
                         data.matrix_2D[i][k]='/';
                     }
                     return true;
@@ -933,7 +1062,7 @@ void inputInBarCom(int *x, int *y){
                 if(count==2){
                     k=k-1;
                     //printf("\ncek count problem\n");
-                    for(k; k>=j; k--){
+                    for(k=k; k>=j; k--){
                         if(data.matrix_2D[i][k]=='\0'){
                             *x = i;
                             *y = k;
@@ -964,7 +1093,7 @@ bool CekCol() {
                     count++;
                 }
                 if(count==3){
-                    for(k; k>=j; k--){
+                    for(k=k; k>=j; k--){
                         data.matrix_2D[k][i]='\\';
                     }
                     return true;
@@ -983,7 +1112,7 @@ bool CekCol() {
                     count++;
                 }
                 if(count==3){
-                    for(k; k>=j; k--){
+                    for(k=k; k>=j; k--){
                         data.matrix_2D[k][i]='/';
                     }
                     return true;
@@ -1035,7 +1164,7 @@ void inputInColCom(int *x, int *y){
             }
                 if(count==2){
                     k = k-1;
-                    for(k; k>=j; k--){
+                    for(k=k; k>=j; k--){
                         if(data.matrix_2D[k][i]=='\0'){
                             *x = k;
                             *y = i;
@@ -1069,7 +1198,7 @@ bool CekDiagon() {
                         }
                     }
                     if(count==3){
-                        for(i; i>=l; i--){
+                        for(i=i; i>=l; i--){
                             for(j=k+2; j>=k; j--){
                                 if(i+tambahBar==j+tambahKol){
                                     data.matrix_2D[i][j]='\\';
@@ -1101,7 +1230,7 @@ bool CekDiagon() {
                         }
                     }
                     if(count==3){
-                        for(i; i>=l; i--){
+                        for(i=i; i>=l; i--){
                             for(j=k; j<=k+2; j++){
                                 if(i+j==k+3+tambahKol){
                                     data.matrix_2D[j][i]='\\';
@@ -1133,7 +1262,7 @@ bool CekDiagon() {
                         }
                     }
                     if(count==3){
-                        for(i; i>=l; i--){
+                        for(i=i; i>=l; i--){
                             for(j=k+2; j>=k; j--){
                                 if(i+tambahBar==j+tambahKol){
                                     data.matrix_2D[i][j]='/';
@@ -1165,7 +1294,7 @@ bool CekDiagon() {
                         }
                     }
                     if(count==3){
-                        for(i; i>=l; i--){
+                        for(i=i; i>=l; i--){
                             for(j=k; j<=k+2; j++){
                                 if(i+j==k+3+tambahKol){
                                     data.matrix_2D[j][i]='/';
@@ -1253,7 +1382,7 @@ bool CekDiagonRLCom(){
 
 void inputInDiagonCom(int *x, int *y) {
     int count=0, tambahBar = 0, tambahKol = 0;
-    int i=0, j=0, k=0, l=0, bar=0, col=0;
+    int i=0, j=0, k=0, l=0;
 
     if(CekDiagonLRCom()){
         //input diagon bar left to right X
@@ -1380,18 +1509,19 @@ void GameOver() {
         //game over jika bukan easy
         if(ukuran!=4){
             if(CekPenuh()){
-                gotoxy(45,11);printf("\nGAME OVER\n");
+                gotoxy(tampilX, tampilY+1); printf("GAME OVER");
             }
             else if(!data.mulai){
                 data.mulai=true;
             }
         } else if (CekPenuh()){
-            gotoxy(45,11);printf("\nSERI\n");
+            gotoxy(tampilX, tampilY+1); printf("SERI");
         }
 
 }
 
 void Medium() {
+    char c;
 
     bonus = 120;
     ukuran = 6;
@@ -1399,12 +1529,22 @@ void Medium() {
 
     bool lagu = true;
 
-    /*if(lagu){
+    if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
+    gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
+    fflush(stdin);
+    scanf("%c", &c);
+    if(c=='t'){
+        Help();
+    } else {
+        gotoxy(50, tampilY+1);printf("Selamat Bermain BRO !!!");
+        Sleep(2000);
+        system("cls");
+    }
 
     if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
@@ -1418,13 +1558,26 @@ void Medium() {
 
     system("cls");
     DisplayBoard();
-    gotoxy(45,11);printf("\nGAME OVER\n");
-
-    HighScores();
-
+    if(data.score_1 == 0 && data.score_2==0){
+        gotoxy(50, tampilY); printf("SERI");
+        gotoxy(50, tampilY+1); printf("Ulang (y/t) ? ");
+        scanf("%c", &c);
+        scanf("%c", &c);
+        if(c=='y'){
+            persiapanMatrix();
+            Easy();
+        }else{
+            main();
+        }
+    }else{
+        gotoxy(50, tampilY+1); printf("GAME OVER\n");
+        HighScores();
+    }
 }
 
 void Hard() {
+
+    char c;
 
     bonus = 150;
     ukuran = 8;
@@ -1432,12 +1585,22 @@ void Hard() {
 
     bool lagu = true;
 
-    /*if(lagu){
-        PlaySound(TEXT("musicingame"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    if(lagu){
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
+    gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
+    fflush(stdin);
+    scanf("%c", &c);
+    if(c=='t'){
+        Help();
+    } else {
+        gotoxy(50, tampilY+1);printf("Selamat Bermain BRO !!!");
+        Sleep(2000);
+        system("cls");
+    }
 
     if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
@@ -1451,12 +1614,25 @@ void Hard() {
 
     system("cls");
     DisplayBoard();
-    gotoxy(45,11);printf("\nGAME OVER\n");
-    HighScores();
+    if(data.score_1 == 0 && data.score_2==0){
+        gotoxy(50, tampilY); printf("SERI");
+        gotoxy(50, tampilY+1); printf("Ulang (y/t) ? ");
+        scanf("%c", &c);
+        scanf("%c", &c);
+        if(c=='y'){
+            persiapanMatrix();
+            Easy();
+        }else{
+            main();
+        }
+    }else{
+        gotoxy(50, tampilY+1); printf("GAME OVER\n");
+        HighScores();
+    }
 }
 
 void PlayerVsComputer() {
-    int menangSuit;
+
 
     InpuNama();
     data.menangSuit = suit();
@@ -1471,8 +1647,9 @@ void PlayerVsComputer() {
 
 void p_com_InputO(int *x, int *y, double *waktuInput) {
     int bar=0, col=0;
-    int i, j, k, l;
     int t;
+    tampilX = 50;
+    tampilY = tampilY;
 
     t = StartTime();
         /*cek bar, col and diagon for input bar and col computer*/
@@ -1507,7 +1684,7 @@ void p_com_InputO(int *x, int *y, double *waktuInput) {
             inputRandCom(&bar, &col);
         }
 
-        printf("(O) input baris kolom : %d %d", bar, col);
+       gotoxy(tampilX, tampilY); printf("(O) input baris kolom : %d %d", bar, col);
 
     t = EndTime() - t;
     Sleep(2000);
@@ -1519,44 +1696,70 @@ void p_com_InputO(int *x, int *y, double *waktuInput) {
 }
 
 void yourGame(){
+    int tambah=0;
+    char c;
+    tampilX = 40;
+    tampilY = 13;
 
-    printf("Berapa ukuran papan mu ? ");
+    menu:
+    system("cls");
+    gotoxy(tampilX, tampilY);printf("Berapa Ukuran Papan Anda (3 s/d 9) ? ");
     while(scanf("%d", &ukuran)!= 1 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
-    }
+        gotoxy(tampilX, tampilY+1+tambah);printf("! ONLY INTEGER ! ==> ");
+        tambah++;
+    } tambah = 0;
 
-    if(ukuran<=3){
-        printf("Maaf papan mu tidak bisa diciptakan karena ukurannya terlalu kecil\n");
-        printf("Ulangi lagi yah :)\n");
+    ukuran=ukuran+1;
+
+    if(ukuran<=3 || ukuran>=11){
+        gotoxy(tampilX, tampilY+1);printf("Maaf Papan Anda Tidak Bisa Diciptakan Karena Ukurannya Tidak Ada :(\n");
+        gotoxy(tampilX, tampilY+2);printf("Ulangi lagi yah :)\n");
         Sleep(3000);
-        yourGame();
+        goto menu;
     }
 
-    printf("Berapa lama batas waktu inputan ? ");
+    system("cls");
+    gotoxy(tampilX, tampilY);printf("Berapa Lama Batas Waktu Inputan ? ");
     while(scanf("%lf", &waktu)!= 1 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
-    }
+        gotoxy(tampilX, tampilY+1+tambah);printf("! ONLY INTEGER ! ==> ");
+        tambah++;
+    }tambah=0;
 
     if(waktu<=0){
-        printf("Maaf waktu mu tidak bisa diciptakan karena waktunya terlalu kecil\n");
-        printf("Ulangi lagi yah :)\n");
+        gotoxy(tampilX, tampilY+1);printf("Maaf Waktu Inputan Tidak Bisa Diciptakan Karena Waktunya Tidak Tersedia :(\n");
+        gotoxy(tampilX, tampilY+2);printf("Ulangi lagi yah :)\n");
         Sleep(3000);
-        yourGame();
+        goto menu;
     }
 
-    printf("Berapa skor bonus yang mau kamu dapatkan ?");
+    system("cls");
+    gotoxy(tampilX, tampilY);printf("Berapa Skor Bonus Yang Anda Mau ? ");
     while(scanf("%d", &bonus)!= 1 && getchar() != '\n'){
-        printf("! ONLY INTEGER ! ==> ");
+        gotoxy(tampilX, tampilY+1+tambah);printf("! ONLY INTEGER ! ==> ");
+        tambah++;
     }
 
-    /*bool lagu = true;
+    bool lagu = true;
 
     if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
+
+    gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
+    fflush(stdin);
+    scanf("%c", &c);
+    if(c=='t'){
+        Help();
+    } else {
+        gotoxy(50, tampilY+1);printf("Selamat Bermain BRO !!!");
+        Sleep(2000);
+        system("cls");
+    }
+
+    fflush(stdin);
 
     if(data.posisi!=1 && data.posisi!=2){
         persiapanMatrix();
@@ -1570,9 +1773,21 @@ void yourGame(){
 
     system("cls");
     DisplayBoard();
-    gotoxy(45,11);printf("\nGAME OVER\n");
-
-    HighScores();
+    if(data.score_1 == 0 && data.score_2==0){
+        gotoxy(50, tampilY); printf("SERI");
+        gotoxy(50, tampilY+1); printf("Ulang (y/t) ? ");
+        scanf("%c", &c);
+        scanf("%c", &c);
+        if(c=='y'){
+            persiapanMatrix();
+            yourGame();
+        }else{
+            main();
+        }
+    }else{
+        gotoxy(50, tampilY+1); printf("GAME OVER\n");
+        HighScores();
+    }
 
 }
 
@@ -1587,9 +1802,9 @@ void HighScores() {
     }sortScore[500], tulis;
 
     /*open file for writing appending*/
-    if(ukuran!=0){
+    if(ukuran!=0 && (data.score_1!=0 || data.score_2!=0)){
         FILE *outfile;
-
+        //menulis highscores
         outfile = fopen("HighScores.dat", "ab");
 
         //check menang kalah
@@ -1601,17 +1816,18 @@ void HighScores() {
             tulis.skor = data.score_2;
         }
 
-        printf("\n%s, Selamat Bang Jagoo !!!\n", tulis.namaPemenang);
+        gotoxy(45, tampilY+1);printf("%s, Selamat Bang Jagoo !!!", tulis.namaPemenang);
 
         //writing file
-        fwrite(&tulis, sizeof(struct formatHS), 1, outfile);
+        //fwrite(&tulis, sizeof(struct formatHS), 1, outfile);
 
         //check if file not succed write
-        if(fwrite != 0){
-            printf("High Score Berhasil disimpan\n");
-            system("pause");
+        if(fwrite(&tulis, sizeof(struct formatHS), 1, outfile) != 0){
+            gotoxy(45, tampilY+2); printf("Score Pemenang Berhasil Disimpan !!!");
+            gotoxy(45, tampilY+3);system("pause");
         } else {
-            printf("sorry ada masalah :(\n");
+            gotoxy(45, tampilY+2);printf("Sorry Ada Masalah :(\n");
+            gotoxy(45, tampilY+3);system("pause");
         }
 
         fclose(outfile);
@@ -1622,17 +1838,17 @@ void HighScores() {
 
         //input array of struct from file
         while(fread(&sortScore[i], sizeof(struct formatHS), 1, sortFile)){
-            printf("%d\n", i);
+            //printf("%d\n", i);
             system("cls");
             i++;
             n++;
         }
 
-        system("pause");
+        //gotoxy(tampilX, tampilY);system("pause");
 
         fclose(sortFile);
 
-        //sort struxt data
+        //sort struct data
         for (i = 0; i < n; i++){
             for (j = i; j < n; j++) {
                 if (sortScore[i].skor < sortScore[j].skor) {
@@ -1653,70 +1869,106 @@ void HighScores() {
     }
 
     /*open file for read and display*/
-    gotoxy(45,11);printf("Anda mau melihat High Score ? (y/t) : ");
+    tampilX=40;
+    tampilY=14;
+    gotoxy(tampilX, tampilY);printf("Anda mau melihat High Score ? (y/t) : ");
     //input \n yg terbawa sebelumnya
     scanf("%c", &c);
     //input pilihannya
     scanf("%c", &c);
+    system("cls");
 
     if(c == 'y'){
         FILE *infile;
-        gotoxy(45,12);infile = fopen("HighScores.dat", "rb");
+        infile = fopen("HighScores.dat", "rb");
+        tampilY = 7;
 
         if(infile == NULL){
-            gotoxy(45,14);printf("Ah, sorry, file tidak ditemukan\n");
+           gotoxy(tampilX, tampilY+1); printf("Ah, sorry, file tidak ditemukan\n");
             exit(0);
         }
-        gotoxy(45,13);printf("Nama\t\t\tSkor\n");
+        gotoxy(tampilX-4, tampilY+1);printf("No");
+        gotoxy(tampilX, tampilY+1);printf("Nama");
+        gotoxy(tampilX+20, tampilY+1);printf("Skor");
         i = 0;
         while(fread(&tulis, sizeof(struct formatHS), 1, infile) && i!=10){
-            gotoxy(45,15);printf("%s\t\t\t%d\n", tulis.namaPemenang, tulis.skor);
+            gotoxy(tampilX-4, tampilY+2);printf("%d", i+1);
+            gotoxy(tampilX, tampilY+2);printf("%s", tulis.namaPemenang);
+            gotoxy(tampilX+20, tampilY+2);printf("%d\n", tulis.skor);
             i++;
+            tampilY++;
         }
-
+        //getch();
         fclose(infile);
     }
 
     data.mulai = false;
-    printf("\nBack To Menu\n");
-    system("pause");
+    gotoxy(tampilX, tampilY+3);printf("Back To Menu");
+    gotoxy(tampilX, tampilY+5);system("pause");
     system("cls");
     main();
 
 }
 
 void Help() {
+int x, y, tambah=0;
+        system("cls");
 		gotoxy(55,2);printf("HELP\n");
 		gotoxy(10,3);printf("======================================================================================================\n");
-		gotoxy(10,5);printf("1. Player pertama akan diminta mengisi kolom dan baris yang diinginkan seusai keinginan\n");
-		gotoxy(10,6);printf("2. Giliran main akan dilempar ke player kedua setelah n(5,10, atau 15) detik\n");
+		gotoxy(10,5);printf("1. Player pertama (PLAYER 1 (X) atau PLAYER 2 (O)) akan diminta mengisi baris dan kolom yang diinginkan\n");
+		gotoxy(10,6);printf("2. Giliran main akan dilempar ke player kedua setelah n(5(easy),10(medium), atau 15(hard) detik\n");
 		gotoxy(10,7);printf("3. Player kedua akan mendapat gilirannya untuk mengisi kolom dan baris yang belum terisi\n");
-		gotoxy(10,8);printf("4. Langkah 1 - 3 akan diulangi terus sampai ada salah satu player yang berhasil\n");
-		gotoxy(10,9);printf("   mengurutkan X/O sebanyak tiga kali secara berurutan atau bidang permainan sudah penuh\n");
-		gotoxy(10,10);printf("5. Jika permainan sudah selesai, maka game akan meminta inputan untuk melanjutkan permainan atau tidak.\n");
-
-    data.mulai = false;
-    printf("\nBack To Menu\n");
-    system("pause");
-    system("cls");
-    main();
+		gotoxy(10,8);printf("4. Jika setelah n detik atau kotak sudah terisi, maka kesempatan giliran diubah\n");
+		gotoxy(10,9);printf("5. Langkah 1 - 4 akan diulangi terus sampai ada salah satu player yang berhasil\n");
+		gotoxy(10,10);printf("   mengurutkan X/O sebanyak tiga kali secara berurutan atau bidang permainan sudah penuh\n");
+		gotoxy(10,11);printf("6. Score akan dihitung ketika terdapat (X/O) berderet 3 kali dengan rumus :\n");
+		gotoxy(10,12);printf("\t\t  Score = Banyak Deret (X/O) + (n - waktu Input Player Terakhir) * Bonus\n");
+		gotoxy(10,13);printf("7. Jika permainan sudah selesai, maka game akan meminta inputan untuk melanjutkan permainan atau tidak.\n");
+		gotoxy(10,15);printf("Mari dicoba Cara Inputnya !!!");
+		gotoxy(10,16);printf("Contoh : Player 1 (X) Input Baris Kolom : 2 3");
+		gotoxy(10,17);printf("Ikuti Contoh !, Player (X) Input Baris Kolom : ");
+        while(scanf("%d %d", &x, &y)!= 2 && getchar() != '\n'){
+            gotoxy(tampilX, 18+tambah); printf("! ONLY INTEGER ! ==> ");
+            tambah++;
+        }
+		if(x!=2 && y!=3){
+            gotoxy(10,18);printf("Harap Ikuti Contoh");
+            Sleep(2000);
+            system("cls");
+            Help();
+		}else{
+            gotoxy(10,18);printf("Selamat Anda Sudah Bisa Menginputkannya :)");
+            Sleep(2000);
+            system("cls");
+            if(ukuran==0){
+                data.mulai = false;
+                gotoxy(10,18);printf("Back To Menu\n");
+                gotoxy(10,19);system("pause");
+                system("cls");
+                main();
+            }
+		}
 
 }
 
 void AboutAuthor() {
 int a;
 
-		//logaritma
-		gotoxy(40,3);printf("pilih salah satu author: 1. Arsal Fadilah\n\t\t\t\t\t\t\t         2. Nauval Ozora Mahadri\n");
-		gotoxy(47,6);printf("Pilih no author :  ");
+		//Algoritma
+		menu:
+		gotoxy(30,3);printf("pilih salah satu author:   1. Arsal Fadilah\n \t\t\t\t\t\t\t 2. Nauval Ozora Mahadri\n");
+		gotoxy(37,6);printf("Pilih No Author :  ");
 		scanf("%d", &a);
+
+        printf("\n\n");
 
 		//cek kesalahan pilihan
 		if(a<1 || a>2){
 			system("cls");
-			gotoxy(45,3);printf("Nomer Author yang anda masukan salah !!!\n");
-       		gotoxy(45,6);system("pause");
-        system("cls");
+			gotoxy(35,3);printf("Nomer Author yang anda masukan salah !!!\n");
+       		gotoxy(35,6);system("pause");
+            system("cls");
+            goto menu;
 		}else{
 		if(a<2){
 				printf("Nama \t\t\t: Arsal Fadilah\n");
@@ -1741,7 +1993,7 @@ int a;
 			}
 		}
 
-    data.mulai = false;
+    data.mulai = true;
     gotoxy(0,24);printf("\nBack To Menu\n");
     gotoxy(0,25);system("pause");
     system("cls");
@@ -1777,8 +2029,8 @@ void savedGame(){
 
     char c;
 
-    printf("Jika anda menyimpan game kali ini, data yang dulu tersimpan akan tegantikan.\n");
-    printf("Yakin mau menyimpannya (y/t) ? ");
+    gotoxy(tampilX-20, tampilY+2);printf("Jika Anda Menyimpan Game Kali Ini, Data Yang Dulu Tersimpan Akan Tegantikan.");
+    gotoxy(tampilX, tampilY+3);printf("Yakin Mau Menyimpannya (y/t) ? ");
     //input tambahan untuk \n
     scanf("%c", &c);
     scanf("%c", &c);
@@ -1788,16 +2040,13 @@ void savedGame(){
 
         savedFile = fopen("saveFile.dat", "wb");
 
-        fwrite(&data, sizeof(struct dataPlayer), 1, savedFile);
-
-        fclose(savedFile);
-
-        if(fwrite != 0){
-            printf("Game berhasil disimpan !!!");
-            printf("Mau lanjut ? (y/t) : ");
+        if(fwrite(&data, sizeof(struct dataPlayer), 1, savedFile) != 0){
+            gotoxy(tampilX, tampilY+4);printf("Game berhasil disimpan !!!");
+            gotoxy(tampilX, tampilY+5);printf("Mau lanjut ? (y/t) : ");
             //input tambahan \n
             scanf("%c", &c);
             scanf("%c", &c);
+            fclose(savedFile);
             if(c == 'y'){
                 PlayTheGame();
             } else {
@@ -1805,6 +2054,7 @@ void savedGame(){
             }
         } else {
             printf("Ops, ada yang salah :(");
+            fclose(savedFile);
         }
 
 
@@ -1837,10 +2087,14 @@ void SetColor(int ForgC){
 
 }
 
-void gotoxy(int x,int y){
+void gotoxy(int x, int y){
+	//Deskripsi: Prosedur untuk menentukan posisi koordinat yang dikehendaki pada layar
+	//I.S.: Koordinat pada layar belum ditentukan
+	//F.S.: Koordinat peda layar sudah ditentukan
+    HANDLE screen = GetStdHandle( STD_OUTPUT_HANDLE );
+
 	COORD set;
 	set.X = x;
 	set.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), set);
+	SetConsoleCursorPosition(screen, set);
 }
-
