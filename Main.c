@@ -43,6 +43,10 @@ void Medium();
 void Hard();
 void PlayerVsComputer();
 void p_com_InputO(int *x, int *y, double *waktuInput);
+void PlayGame_1();
+void PlayGame_2();
+void PlayGame_3();
+void PlayGame_4();
 void yourGame();
 void HighScores();
 void Help();
@@ -50,6 +54,7 @@ void AboutAuthor();
 void loadGame();
 void savedGame();
 void exitGame();
+void tampilan_awal();
 
 /*modul interface*/
 void SetColor(int ForgC);
@@ -80,11 +85,11 @@ int main() {
     system("color 0B");
 
     //play backsound
-    PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    /*PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
         LoadDisplay();
-    }
+    }*/
 
     //inisialisasi var
     ukuran = 0;
@@ -92,6 +97,9 @@ int main() {
     data.score_1 = 0;
     data.score_2 = 0;
     data.mulai = true;
+    
+    tampilan_awal();
+    system("cls");
 
 menu:
     DisplayMenu();
@@ -126,7 +134,7 @@ void LoadDisplay() {
         if((1+i)%5==0){
             gotoxy(tampilX+2, tampilY+1); printf("Loading -");
         }else if ((1+i)%4==0){
-            gotoxy(tampilX+2, tampilY+1); printf("Loading \\");
+            gotoxy(tampilX+3, tampilY+1); printf("Loading \\");
         } else if ((1+i)%3==0){
             gotoxy(tampilX+2, tampilY+1); printf("Loading |");
         }  else if ((1+i)%2==0){
@@ -187,10 +195,10 @@ int ChooseEnemy() {
     tampilX = 45;
     tampilY = 11;
 
-    gotoxy(tampilX+10, tampilY);printf("Pilih Lawan\n");
+    gotoxy(tampilX+10, tampilY);printf("Pilih Lawan Bermain\n");
     gotoxy(tampilX, tampilY+1);printf("=============================\n");
-    gotoxy(tampilX+2, tampilY+2);printf("1. Player Vs Player\n");
-    gotoxy(tampilX+2, tampilY+3);printf("2. Player Vs Computer\n\n");
+    gotoxy(tampilX+2, tampilY+2);printf("1. Player  Vs Player \n");
+    gotoxy(tampilX+2, tampilY+3);printf("2. Player Vs Komputer\n\n");
     gotoxy(tampilX, tampilY+5);printf("Pilihan Kamu : ");
     while(scanf("%d", &x)!= 1 && getchar() != '\n'){
         gotoxy(tampilX, tampilY+6+tambah);printf("! ONLY INTEGER ! ==> ");
@@ -214,11 +222,11 @@ int ChooseLevel() {
     tampilX = 45;
     tampilY = 10;
 
-    gotoxy(tampilX+10, tampilY);printf("Pilih Level\n");
+    gotoxy(tampilX+3, tampilY);printf("Pilih Level Kemampuanmu!\n");
     gotoxy(tampilX, tampilY+1);printf("=============================\n");
-    gotoxy(tampilX+2, tampilY+2);printf("1. Easy\n");
-    gotoxy(tampilX+2, tampilY+3);printf("2. Medium\n");
-    gotoxy(tampilX+2, tampilY+4);printf("3. Hard\n");
+    gotoxy(tampilX+2, tampilY+2);printf("1. Amateur\n");
+    gotoxy(tampilX+2, tampilY+3);printf("2. Professional\n");
+    gotoxy(tampilX+2, tampilY+4);printf("3. Legend\n");
     gotoxy(tampilX+2, tampilY+5);printf("4. Your Own Game\n\n");
     gotoxy(tampilX, tampilY+7);printf("Pilihan Kamu : ");
     while(scanf("%d", &x)!= 1 && getchar() != '\n'){
@@ -430,10 +438,10 @@ void Easy() {
     ukuran = 4;
     waktu = 10;
 
-    if(lagu){
+    /*if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }
+    }*/
 
     LoadDisplay();
 
@@ -559,351 +567,18 @@ void DisplayBoard(){
 }
 
 void PlayTheGame() {
-    int bar = 0, col = 0;
-    double waktuInput = 0;
-    bool penuh = true;
-    tampilX = 50;
-
     if (data.enemy == 1 && data.menangSuit == 1) {
-        //Inputan jika player 1 main dulu mode p vs p
-        if(data.posisi==1 || data.posisi==0){
-            data.posisi = 1;
-            p_1_InputX(&bar, &col, &waktuInput);
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'X';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-                //Hitung Highscores
-                if(!data.mulai && penuh){
-                    data.score_1++;
-                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
-                }
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            } else if (bar == 0 && col ==0){
-                savedGame();
-            } else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-            GameOver();
-        }
-
-        if(data.mulai){
-            data.posisi = 2;
-            p_2_InputO(&bar, &col, &waktuInput);
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'O';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-
-                if(!data.mulai && penuh){
-                    data.score_2++;
-                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
-                }
-
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            } else if(bar == 0 && col ==0){
-                savedGame();
-            } else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-            GameOver();
-        }
-        data.posisi=data.posisi-1;
+    	PlayGame_1();
     }
     else if (data.enemy == 1 && data.menangSuit == 2) {
-        if(data.posisi==1 || data.posisi==0){
-           data.posisi = 1;
-            p_2_InputO(&bar, &col, &waktuInput);
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'O';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-                if(!data.mulai && penuh){
-                    data.score_2++;
-                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
-                }
-
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            } else if(bar == 0 && col ==0){
-                savedGame();
-            } else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-            GameOver();
-        }
-
-        if(data.mulai){
-            data.posisi = 2;
-            p_1_InputX(&bar, &col, &waktuInput);
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'X';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-
-                if(!data.mulai && penuh){
-                    data.score_1++;
-                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
-                }
-
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            } else if(bar == 0 && col ==0){
-                savedGame();
-            } else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-            GameOver();
-        }
-        data.posisi=data.posisi-1;
+    	PlayGame_2();
     }
     else if (data.enemy == 2 && data.menangSuit == 1) {
-        if(data.posisi==1 || data.posisi==0){
-            data.posisi = 1;
-            p_1_InputX(&bar, &col, &waktuInput);
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'X';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-
-                if(!data.mulai && penuh){
-                    data.score_1++;
-                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
-                }
-
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            } else if(bar == 0 && col ==0){
-                    savedGame();
-            } else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-            GameOver();
-        }
-
-        if(data.mulai){
-            data.posisi=2;
-            p_com_InputO(&bar, &col, &waktuInput);
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'O';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-
-                if(!data.mulai && penuh){
-                    data.score_2++;
-                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
-                }
-
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            } else if(bar == 0 && col ==0){
-                    savedGame();
-            } else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-            GameOver();
-        }
-        data.posisi=data.posisi-1;
+    	PlayGame_3();
     }
     else if(data.enemy == 2 && data.menangSuit == 2) {
-        if(data.posisi==1 || data.posisi==0){
-            p_com_InputO(&bar, &col, &waktuInput);
-            data.posisi = 1;
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'O';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-
-                if(!data.mulai && penuh){
-                    data.score_2++;
-                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
-                }
-
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            }
-            //else if(bar == 0 && col ==0){
-              //      savedGame();
-            //}
-            else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-
-            GameOver();
-        }
-
-        if(data.mulai){
-            p_1_InputX(&bar, &col, &waktuInput);
-            data.posisi = 2;
-            if (CekSel(bar, col) && waktuInput<=waktu) {
-                system("cls");
-                data.matrix_2D[bar][col] = 'X';
-                DisplayBoard();
-                if(CekBar()){
-                    data.mulai = false;
-                } else if(CekCol()){
-                    data.mulai = false;
-                } else if(CekDiagon()){
-                    data.mulai = false;
-                } else if(CekPenuh()){
-                    penuh = false;
-                    data.mulai = false;
-                }
-
-                if(!data.mulai && penuh){
-                    data.score_1++;
-                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
-                }
-
-            } else if(waktuInput>waktu){
-                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
-                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
-                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
-                Sleep(2000);
-                system("cls");
-                DisplayBoard();
-            } else if(bar == 0 && col ==0){
-                savedGame();
-            } else {
-                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
-                Sleep(1500);
-                system("cls");
-                DisplayBoard();
-            }
-            GameOver();
-        }
-        data.posisi=data.posisi-1;
-    }
-
-
+    	PlayGame_4();
+	}
 }
 
 int StartTime() {
@@ -1529,10 +1204,10 @@ void Medium() {
 
     bool lagu = true;
 
-    if(lagu){
+    /*if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }
+    }*/
 
     LoadDisplay();
     gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
@@ -1585,10 +1260,10 @@ void Hard() {
 
     bool lagu = true;
 
-    if(lagu){
+    /*if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }
+    }*/
 
     LoadDisplay();
     gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
@@ -1695,6 +1370,365 @@ void p_com_InputO(int *x, int *y, double *waktuInput) {
 
 }
 
+void PlayGame_1(){
+	int bar = 0, col = 0;
+    double waktuInput = 0;
+    bool penuh = true;
+    tampilX = 50;
+        //Inputan jika player 1 main dulu mode p vs p
+        if(data.posisi==1 || data.posisi==0){
+            data.posisi = 1;
+            p_1_InputX(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+                //Hitung Highscores
+                if(!data.mulai && penuh){
+                    data.score_1++;
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
+                }
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            } else if (bar == 0 && col ==0){
+                savedGame();
+            } else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+            GameOver();
+        }
+
+        if(data.mulai){
+            data.posisi = 2;
+            p_2_InputO(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_2++;
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            } else if(bar == 0 && col ==0){
+                savedGame();
+            } else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+            GameOver();
+        }
+        data.posisi=data.posisi-1;
+}
+
+
+void PlayGame_2(){
+	int bar = 0, col = 0;
+    double waktuInput = 0;
+    bool penuh = true;
+    tampilX = 50;
+        if(data.posisi==1 || data.posisi==0){
+           data.posisi = 1;
+            p_2_InputO(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+                if(!data.mulai && penuh){
+                    data.score_2++;
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            } else if(bar == 0 && col ==0){
+                savedGame();
+            } else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+            GameOver();
+        }
+
+        if(data.mulai){
+            data.posisi = 2;
+            p_1_InputX(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_1++;
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            } else if(bar == 0 && col ==0){
+                savedGame();
+            } else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+            GameOver();
+        }
+        data.posisi=data.posisi-1;
+}
+
+void PlayGame_3(){
+	int bar = 0, col = 0;
+    double waktuInput = 0;
+    bool penuh = true;
+    tampilX = 50;
+        if(data.posisi==1 || data.posisi==0){
+            data.posisi = 1;
+            p_1_InputX(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_1++;
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            } else if(bar == 0 && col ==0){
+                    savedGame();
+            } else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+            GameOver();
+        }
+
+        if(data.mulai){
+            data.posisi=2;
+            p_com_InputO(&bar, &col, &waktuInput);
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_2++;
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            } else if(bar == 0 && col ==0){
+                    savedGame();
+            } else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+            GameOver();
+        }
+        data.posisi=data.posisi-1;
+}
+
+void PlayGame_4(){
+	int bar = 0, col = 0;
+    double waktuInput = 0;
+    bool penuh = true;
+    tampilX = 50;
+        if(data.posisi==1 || data.posisi==0){
+            p_com_InputO(&bar, &col, &waktuInput);
+            data.posisi = 1;
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'O';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_2++;
+                    data.score_2 = data.score_2+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            }
+            //else if(bar == 0 && col ==0){
+              //      savedGame();
+            //}
+            else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+
+            GameOver();
+        }
+
+        if(data.mulai){
+            p_1_InputX(&bar, &col, &waktuInput);
+            data.posisi = 2;
+            if (CekSel(bar, col) && waktuInput<=waktu) {
+                system("cls");
+                data.matrix_2D[bar][col] = 'X';
+                DisplayBoard();
+                if(CekBar()){
+                    data.mulai = false;
+                } else if(CekCol()){
+                    data.mulai = false;
+                } else if(CekDiagon()){
+                    data.mulai = false;
+                } else if(CekPenuh()){
+                    penuh = false;
+                    data.mulai = false;
+                }
+
+                if(!data.mulai && penuh){
+                    data.score_1++;
+                    data.score_1 = data.score_1+(waktu-waktuInput)*bonus;
+                }
+
+            } else if(waktuInput>waktu){
+                gotoxy(tampilX, tampilY+1);printf("Giliran di-GANTI Karena :");
+                gotoxy(tampilX, tampilY+2);printf("Waktu Berpikir Anda %.2f s",waktuInput);
+                gotoxy(tampilX, tampilY+3);printf("Harusnya %.0f s\n", waktu);
+                Sleep(2000);
+                system("cls");
+                DisplayBoard();
+            } else if(bar == 0 && col ==0){
+                savedGame();
+            } else {
+                gotoxy(tampilX, tampilY+1);printf("kotak penuh, giliran diganti !\n");
+                Sleep(1500);
+                system("cls");
+                DisplayBoard();
+            }
+            GameOver();
+        }
+        data.posisi=data.posisi-1;
+}
+
 void yourGame(){
     int tambah=0;
     char c;
@@ -1741,10 +1775,10 @@ void yourGame(){
 
     bool lagu = true;
 
-    if(lagu){
+    /*if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }
+    }*/
 
     LoadDisplay();
 
@@ -2066,7 +2100,20 @@ void savedGame(){
 }
 
 void exitGame() {
-    exit(0);
+	char c;
+	
+	gotoxy(tampilX, tampilY);printf("Anda mau keluar dari game ? (y/t) : ");
+    scanf("%c", &c);
+    scanf("%c", &c);
+    system("cls");
+	if(c == 't'){
+		gotoxy(0,24);printf("\nBack To Menu\n");
+    	gotoxy(0,25);system("pause");
+   	 	main();
+	}else{
+   	 	exit(0);
+	}
+    
 }
 
 void SetColor(int ForgC){
@@ -2097,4 +2144,13 @@ void gotoxy(int x, int y){
 	set.X = x;
 	set.Y = y;
 	SetConsoleCursorPosition(screen, set);
+}
+
+void tampilan_awal(){
+	tampilX=48;
+    tampilY=12;
+    
+	gotoxy(tampilX+5, tampilY);printf("AVRA.COM");
+	gotoxy(tampilX, tampilY+3);printf("ULTIMATE TIC TAC TOE");
+	Sleep(5000);
 }
