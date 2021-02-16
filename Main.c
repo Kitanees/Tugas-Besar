@@ -85,11 +85,13 @@ int main() {
     system("color 0B");
 
     //play backsound
-    /*PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
+    tampilan_awal();
 
     if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
         LoadDisplay();
-    }*/
+    }
 
     //inisialisasi var
     ukuran = 0;
@@ -97,8 +99,8 @@ int main() {
     data.score_1 = 0;
     data.score_2 = 0;
     data.mulai = true;
-    
-    tampilan_awal();
+
+
     system("cls");
 
 menu:
@@ -134,7 +136,7 @@ void LoadDisplay() {
         if((1+i)%5==0){
             gotoxy(tampilX+2, tampilY+1); printf("Loading -");
         }else if ((1+i)%4==0){
-            gotoxy(tampilX+3, tampilY+1); printf("Loading \\");
+            gotoxy(tampilX+2, tampilY+1); printf("Loading \\");
         } else if ((1+i)%3==0){
             gotoxy(tampilX+2, tampilY+1); printf("Loading |");
         }  else if ((1+i)%2==0){
@@ -142,8 +144,6 @@ void LoadDisplay() {
         }
         gotoxy(tampilX+12, tampilY+1);system("cls");
     }
-
-
 }
 
 void DisplayMenu() {
@@ -438,10 +438,10 @@ void Easy() {
     ukuran = 4;
     waktu = 10;
 
-    /*if(lagu){
+    if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
 
@@ -1204,10 +1204,10 @@ void Medium() {
 
     bool lagu = true;
 
-    /*if(lagu){
+    if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
     gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
@@ -1240,7 +1240,7 @@ void Medium() {
         scanf("%c", &c);
         if(c=='y'){
             persiapanMatrix();
-            Easy();
+            Medium();
         }else{
             main();
         }
@@ -1260,10 +1260,10 @@ void Hard() {
 
     bool lagu = true;
 
-    /*if(lagu){
+    if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
     gotoxy(40, tampilY);printf("Hai, Kamu Sudah Tau Cara Mainnya (y/t) ? ");
@@ -1296,7 +1296,7 @@ void Hard() {
         scanf("%c", &c);
         if(c=='y'){
             persiapanMatrix();
-            Easy();
+            Hard();
         }else{
             main();
         }
@@ -1775,10 +1775,10 @@ void yourGame(){
 
     bool lagu = true;
 
-    /*if(lagu){
+    if(lagu){
         PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
-    }*/
+    }
 
     LoadDisplay();
 
@@ -1958,20 +1958,21 @@ int x, y, tambah=0;
 		gotoxy(10,11);printf("6. Score akan dihitung ketika terdapat (X/O) berderet 3 kali dengan rumus :\n");
 		gotoxy(10,12);printf("\t\t  Score = Banyak Deret (X/O) + (n - waktu Input Player Terakhir) * Bonus\n");
 		gotoxy(10,13);printf("7. Jika permainan sudah selesai, maka game akan meminta inputan untuk melanjutkan permainan atau tidak.\n");
-		gotoxy(10,15);printf("Mari dicoba Cara Inputnya !!!");
-		gotoxy(10,16);printf("Contoh : Player 1 (X) Input Baris Kolom : 2 3");
-		gotoxy(10,17);printf("Ikuti Contoh !, Player (X) Input Baris Kolom : ");
+		gotoxy(10,14);printf("8. Jika permainan mau disimpan maka tulis baris dan kolom \"0 0\"\n");
+		gotoxy(10,16);printf("Mari dicoba Cara Inputnya !!!");
+		gotoxy(10,17);printf("Contoh : Player 1 (X) Input Baris Kolom : 2 3");
+		gotoxy(10,18);printf("Ikuti Contoh !, Player (X) Input Baris Kolom : ");
         while(scanf("%d %d", &x, &y)!= 2 && getchar() != '\n'){
             gotoxy(tampilX, 18+tambah); printf("! ONLY INTEGER ! ==> ");
             tambah++;
         }
 		if(x!=2 && y!=3){
-            gotoxy(10,18);printf("Harap Ikuti Contoh");
+            gotoxy(10,19);printf("Harap Ikuti Contoh");
             Sleep(2000);
             system("cls");
             Help();
 		}else{
-            gotoxy(10,18);printf("Selamat Anda Sudah Bisa Menginputkannya :)");
+            gotoxy(10,19);printf("Selamat Anda Sudah Bisa Menginputkannya :)");
             Sleep(2000);
             system("cls");
             if(ukuran==0){
@@ -2101,7 +2102,7 @@ void savedGame(){
 
 void exitGame() {
 	char c;
-	
+
 	gotoxy(tampilX, tampilY);printf("Anda mau keluar dari game ? (y/t) : ");
     scanf("%c", &c);
     scanf("%c", &c);
@@ -2113,7 +2114,7 @@ void exitGame() {
 	}else{
    	 	exit(0);
 	}
-    
+
 }
 
 void SetColor(int ForgC){
@@ -2149,8 +2150,10 @@ void gotoxy(int x, int y){
 void tampilan_awal(){
 	tampilX=48;
     tampilY=12;
-    
-	gotoxy(tampilX+5, tampilY);printf("AVRA.COM");
+
+    system("cls");
+	gotoxy(tampilX+5, tampilY);printf("ARVA.COM");
 	gotoxy(tampilX, tampilY+3);printf("ULTIMATE TIC TAC TOE");
+	gotoxy(tampilX+9, tampilY+4);printf("");
 	Sleep(5000);
 }
