@@ -85,7 +85,7 @@ int main() {
     system("color 0B");
 
     //play backsound
-    PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    //PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     tampilan_awal();
 
@@ -195,7 +195,7 @@ int ChooseEnemy() {
     tampilX = 45;
     tampilY = 11;
 
-    gotoxy(tampilX+10, tampilY);printf("Pilih Lawan Bermain\n");
+    gotoxy(tampilX+6, tampilY);printf("Pilih Lawan Bermain\n");
     gotoxy(tampilX, tampilY+1);printf("=============================\n");
     gotoxy(tampilX+2, tampilY+2);printf("1. Player  Vs Player \n");
     gotoxy(tampilX+2, tampilY+3);printf("2. Player Vs Komputer\n\n");
@@ -439,7 +439,7 @@ void Easy() {
     waktu = 10;
 
     if(lagu){
-        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
@@ -1205,7 +1205,7 @@ void Medium() {
     bool lagu = true;
 
     if(lagu){
-        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
@@ -1261,7 +1261,7 @@ void Hard() {
     bool lagu = true;
 
     if(lagu){
-        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
@@ -1776,7 +1776,7 @@ void yourGame(){
     bool lagu = true;
 
     if(lagu){
-        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
