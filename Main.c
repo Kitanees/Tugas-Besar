@@ -85,11 +85,10 @@ int main() {
     system("color 0B");
 
     //play backsound
-    //PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-
-    tampilan_awal();
+    PlaySound(TEXT("themesong.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     if((data.posisi!=1 ||data.score_2 != 2) && !data.mulai){
+        tampilan_awal();
         LoadDisplay();
     }
 
@@ -195,9 +194,9 @@ int ChooseEnemy() {
     tampilX = 45;
     tampilY = 11;
 
-    gotoxy(tampilX+6, tampilY);printf("Pilih Lawan Bermain\n");
+    gotoxy(tampilX+5, tampilY);printf("Pilih Lawan Bermain\n");
     gotoxy(tampilX, tampilY+1);printf("=============================\n");
-    gotoxy(tampilX+2, tampilY+2);printf("1. Player  Vs Player \n");
+    gotoxy(tampilX+2, tampilY+2);printf("1. Player Vs Player \n");
     gotoxy(tampilX+2, tampilY+3);printf("2. Player Vs Komputer\n\n");
     gotoxy(tampilX, tampilY+5);printf("Pilihan Kamu : ");
     while(scanf("%d", &x)!= 1 && getchar() != '\n'){
@@ -209,7 +208,7 @@ int ChooseEnemy() {
     if(x==1 || x==2){
         return x;
     }else {
-        gotoxy(tampilX, tampilY+6);printf("Ops, anda salah input\n");
+        gotoxy(tampilX, tampilY+6);printf("Ops, Anda Salah Input\n");
         gotoxy(tampilX, tampilY+7);system("pause");
         system("cls");
         return ChooseEnemy();
@@ -250,24 +249,22 @@ void InpuNama() {
     tampilX = 43;
     tampilY = 13;
 
+    gotoxy(tampilX+2, tampilY-2);printf("! Masukan Nama Max 20 karakter !");
+
     if(data.enemy==1){
+        fflush(stdin);
         gotoxy(tampilX+2, tampilY);printf("Nama Player 1 (X) : ");
-        fgets(data.nama, sizeof(data.nama), stdin);
-        data.nama[strlen(data.nama) - 1] = '\0';
         scanf("%[^\n]s", data.nama);
+        fflush(stdin);
         gotoxy(tampilX+2, tampilY+1);printf("Nama Player 2 (O) : ");
-        fgets(data.nama_2, sizeof(data.nama_2), stdin);
-        data.nama_2[strlen(data.nama_2) - 1] = '\0';
         scanf("%[^\n]s", data.nama_2);
     } else {
+        fflush(stdin);
         gotoxy(tampilX, tampilY);printf("Nama Kamu : ");
-        fgets(data.nama, sizeof(data.nama), stdin);
-        data.nama[strlen(data.nama) - 1] = '\0';
         scanf("%[^\n]s", data.nama);
         strcpy(data.nama_2, "Arva_Com");
         gotoxy(tampilX, tampilY+1);printf("Nama Komputer : %s\n", data.nama_2);
         gotoxy(tampilX, tampilY+2);system("pause");
-
     }
 
 }
@@ -320,7 +317,7 @@ int suit() {
 							}
 							else if(P==3){
 								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : KERTAS\n", data.nama);
-								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=1;
 							}
 						}
@@ -328,7 +325,7 @@ int suit() {
 							gotoxy(tampilX, tampilY);printf("PLAYER 2 %s MENDAPATKAN : GUNTING\n", data.nama_2);
 							if(P==1){
 								gotoxy(tampilX, tampilY+1);printf("PLAYER 1 %s MENDAPATKAN : BATU\n", data.nama);
-								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama);
+								gotoxy(tampilX, tampilY+3);printf("PLAYER 2 %s BERMAIN TERLEBIH DAHULU", data.nama_2);
 								menang=1;
 							}
 							else if(P==2){
@@ -414,7 +411,7 @@ int suit() {
 							}
 							else if(P==3){
 								gotoxy(tampilX, tampilY+1);printf("PLAYER MENDAPATKAN : KERTAS\n");
-								gotoxy(tampilX, tampilY+2);printf("HASIL SERI !!! ULANGI LAGI !!!");
+								gotoxy(tampilX, tampilY+3);printf("HASIL SERI !!! ULANGI LAGI !!!");
 								Sleep(1000);
 							}
 						}
@@ -434,12 +431,12 @@ void Easy() {
     data.mulai = true;
     bool lagu = true;
 
-    bonus = 300;
+    bonus = 100;
     ukuran = 4;
     waktu = 10;
 
     if(lagu){
-        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
@@ -1205,7 +1202,7 @@ void Medium() {
     bool lagu = true;
 
     if(lagu){
-        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
@@ -1261,7 +1258,7 @@ void Hard() {
     bool lagu = true;
 
     if(lagu){
-        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
@@ -1776,7 +1773,7 @@ void yourGame(){
     bool lagu = true;
 
     if(lagu){
-        //PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(TEXT("musicingame.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
         lagu = false;
     }
 
